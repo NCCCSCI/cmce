@@ -7,6 +7,11 @@ export default [
     component: () => lazyLoadView(import('@views/home.vue')),
   },
   {
+    path: '/xlsx',
+    name: 'xlsx',
+    component: () => lazyLoadView(import('@views/xlsx.vue')),
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => lazyLoadView(import('@views/login.vue')),

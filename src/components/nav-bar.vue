@@ -14,6 +14,10 @@ export default {
       ],
       loggedInNavRoutes: [
         {
+          name: 'xlsx',
+          title: () => 'XLSX',
+        },
+        {
           name: 'profile',
           title: () => 'Logged in as ' + this.currentUser.name,
         },
