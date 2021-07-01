@@ -1,8 +1,6 @@
-/*
-const RQ = 'RQ';
-const CH = 'CH';
-const RM = 'RM';
-*/
+const RQ = 'RQ'
+const CH = 'CH'
+// const RM = 'RM';
 
 class Material {
   constructor(author, title, edition, price) {
@@ -71,8 +69,14 @@ export const mutations = {
 }
 
 export const actions = {
-  processRow({ commit, state, rootState }, row) {
-    const course = new Course(row.subjectCode, row.courseNumber, row.sectionId)
-    commit('ADD_COURSE', course)
+  processRow({ commit, state, rootState }, rowObj) {
+    if (rowObj.materialStatus === RQ || rowObj.materialStatus === CH) {
+      const course = new Course(
+        rowObj.subjectCode,
+        rowObj.courseNumber,
+        rowObj.sectionId
+      )
+      commit('ADD_COURSE', course)
+    }
   },
 }

@@ -44,6 +44,7 @@ export default {
         rental: 'V',
         newRetailPrice: 'Y',
       }
+      const COURSE_NUMBER_LENGTH = 3
 
       let row = 2
       while (typeof firstSheet['A' + row] !== 'undefined') {
@@ -51,8 +52,13 @@ export default {
         const strRow = row.toString()
         const courseNumberAndSection = COLUMNS.courseNumberAndSection + strRow
         const confirmCheck = COLUMNS.adoptionStatus + strRow
+        const courseNumber =
+          typeof firstSheet[courseNumberAndSection] !== 'undefined'
+            ? firstSheet[courseNumberAndSection].v.toString()
+            : ''
+        const re = new RegExp('^\\d{' + COURSE_NUMBER_LENGTH + '}')
         if (
-          /^\d{3}/.test(firstSheet[courseNumberAndSection].v) &&
+          re.test(courseNumber) &&
           typeof firstSheet[confirmCheck] !== 'undefined' &&
           firstSheet[confirmCheck].v === CONFIRMED
         ) {
@@ -60,6 +66,8 @@ export default {
             const cell = COLUMNS[col] + row
             rowObj[col] = firstSheet[cell].v
           }
+          rowObj.courseNumber = courseNumber.substring(0, COURSE_NUMBER_LENGTH)
+          rowObj.sectionId = courseNumber.substring(COURSE_NUMBER_LENGTH)
           this.processRow(rowObj)
         }
         row++
