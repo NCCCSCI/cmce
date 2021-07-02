@@ -13,7 +13,7 @@ export const courseComputed = {
   ...mapState('courseData', {
     courses: (state) => state.courses,
   }),
-  ...mapGetters('courseData', ['courses']),
+  ...mapGetters('courseData', ['getAllMaterialCostData']),
 }
 
 export const courseMethods = mapActions('courseData', ['processRow'])
