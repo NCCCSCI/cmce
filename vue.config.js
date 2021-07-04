@@ -37,6 +37,6 @@ module.exports = {
         { before: require('./tests/mock-api') }),
   },
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/dist/'
+    ? '/'
   : '/'
 }
