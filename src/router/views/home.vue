@@ -13,7 +13,6 @@ export default {
 
 <template>
   <Layout>
-    <h1>Home Page</h1>
-    <img src="@assets/images/logo.png" alt="Logo" />
+    <h1>Course Material Cost Estimator</h1>
   </Layout>
 </template>

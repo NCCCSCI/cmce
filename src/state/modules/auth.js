@@ -31,11 +31,6 @@ export const actions = {
   logIn({ commit, dispatch, getters }, { username, password } = {}) {
     if (getters.loggedIn) return dispatch('validate')
 
-    commit('SET_CURRENT_USER',username);
-    return username;
-/*
- * Authentication will be changing
- *
     return axios
       .post('/api/session', { username, password })
       .then((response) => {
@@ -43,7 +38,6 @@ export const actions = {
         commit('SET_CURRENT_USER', user)
         return user
       })
-*/
   },
 
   // Logs out the current user.

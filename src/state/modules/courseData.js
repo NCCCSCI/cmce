@@ -7,6 +7,8 @@ class Material {
     this.isbn = obj.isbn
     this.author = obj.author
     this.title = obj.title
+    this.status = obj.materialStatus
+    this.note = obj.note
     const price = parseFloat(obj.newRetailPrice)
     if (isNaN(price)) {
       throw new Error('No new retail price ' + obj.newRetailPrice)
@@ -30,6 +32,7 @@ class Section {
   }
 
   addMaterial(material) {
+    // capture the material with the HIGHEST cost of ownership
     const signature = material.signature
     if (typeof this.materials[signature] === 'undefined') {
       this.materials[signature] = material
@@ -45,9 +48,32 @@ class Section {
   get totalCostOfMaterials() {
     let totalCost = 0.0
     for (const m in this.materials) {
+      if (this.materials[m].status !== RQ) {
+        return '---' // if any of the materials are not REQUIRED - the cost can't be reliably reported
+      }
       totalCost += this.materials[m].price
     }
-    return totalCost
+    return totalCost // .toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
+  }
+
+  get notes() {
+    let allRQ = true
+    let notes = ''
+    for (const m in this.materials) {
+      if (this.materials[m].status !== RQ) {
+        allRQ = false
+      }
+      if (
+        this.materials[m].note !== '' &&
+        notes.indexOf(this.materials[m].note) === -1
+      ) {
+        notes += this.materials[m].note + '  \n'
+      }
+    }
+    if (!allRQ) {
+      notes = '*** One or more of the materials is a CHOICE ***  \n' + notes
+    }
+    return notes
   }
 }
 
@@ -85,6 +111,7 @@ export const getters = {
           course.courseNumber,
           section.id,
           section.totalCostOfMaterials,
+          section.notes,
         ])
       }
     }

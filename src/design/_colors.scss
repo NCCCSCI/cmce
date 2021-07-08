@@ -1,10 +1,15 @@
 // CONTENT
-$color-body-bg: #f9f7f5;
-$color-text: #444;
-$color-heading-text: #35495e;
+$color-body-bg: transparent;
+$color-text: #fff;
+$color-heading-text: #f2f2f2;
+$color-heading-filter: drop-shadow(0 0 0.25rem $color-text);
+
+$color-container-bg: #000a;
+
+$color-credit: #fff;
 
 // LINKS
-$color-link-text: #39a275;
+$color-link-text: #f90;
 $color-link-text-active: $color-text;
 
 // INPUTS

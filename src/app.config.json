@@ -1,4 +1,6 @@
 {
   "title": "NoLo",
-  "description": "NoLo"
+  "description": "NoLo",
+  "noloThreshold": 40.0,
+  "targetServer": "https://www.nashuaweb.net/nolo/undex.php"
 }

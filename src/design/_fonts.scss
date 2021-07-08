@@ -12,6 +12,7 @@ $content-font-weight: 400;
   font-family: $heading-font-family;
   font-weight: $heading-font-weight;
   color: $color-heading-text;
+  filter: $color-heading-filter;
 }
 
 %font-content {

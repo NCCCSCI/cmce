@@ -44,8 +44,15 @@ export default {
 }
 
 body {
-  background: $color-body-bg;
+  background: url(~@assets/design/STHLM8_1535x971.jpg) no-repeat center center
+      fixed,
+    #fff;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
+
 #app {
   @extend %typography-small;
 }
