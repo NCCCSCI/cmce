@@ -105,6 +105,7 @@ export default {
       this.previewButtonText = this.showPreview ? 'Hide' : 'Show'
     },
     renderPreview() {
+      this.previewHTML = ''
       if (this.workbook() !== null) {
         const sheetNames = this.workbook().SheetNames
         const sheet1 = sheetNames[0]
@@ -122,12 +123,10 @@ export default {
             el.textContent += '0'
           }
           const numericV = parseFloat(v)
-          if (numericV > appConfig.noloThreshold) {
-            el.closest('tr').setAttribute('nonolo', 'nonolo')
+          if (numericV <= appConfig.noloThreshold) {
+            el.closest('tr').setAttribute('nolomaybe', 'true')
           }
         })
-      } else {
-        this.previewHTML = ''
       }
     },
   },
@@ -174,7 +173,7 @@ export default {
     max-height: 75vh;
     padding: 25px;
     overflow: auto;
-    background-color: #fffd;
+    background-color: #dddd;
 
     tbody {
       tr {
@@ -198,9 +197,9 @@ export default {
         background-color: #7777;
       }
 
-      tr[nonolo] {
+      tr[nolomaybe] {
         font-weight: 600;
-        color: #800;
+        color: darkgreen;
       }
     }
   }
