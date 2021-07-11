@@ -1,6 +1,5 @@
-const RQ = 'RQ'
-const CH = 'CH'
-// const RM = 'RM';
+const RQ = 'RQ' // Required
+const CH = 'CH' // Choice
 
 class Material {
   constructor(obj) {

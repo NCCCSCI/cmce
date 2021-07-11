@@ -12,6 +12,11 @@ export default [
     component: () => lazyLoadView(import('@views/xlsx.vue')),
   },
   {
+    path: '/remote',
+    name: 'get-file',
+    component: () => lazyLoadView(import('@views/remote.vue')),
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => lazyLoadView(import('@views/login.vue')),
@@ -75,7 +80,7 @@ export default [
     meta: {
       authRequired: true,
       beforeResolve(routeTo, routeFrom, next) {
-        store.dispatch('auth/logOut')
+        store.dispatch('remote/clearCredentials')
         const authRequiredOnPreviousRoute = routeFrom.matched.some(
           (route) => route.meta.authRequired
         )

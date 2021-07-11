@@ -58,6 +58,7 @@ export default {
   padding: $size-input-padding-vertical $size-input-padding-horizontal;
   margin-bottom: $size-grid-padding;
   line-height: 1;
+  color: $color-input-text;
   border: $size-input-border solid $color-input-border;
   border-radius: $size-input-border-radius;
 }

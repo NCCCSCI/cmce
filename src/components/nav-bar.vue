@@ -11,12 +11,16 @@ export default {
           name: 'home',
           title: 'Home',
         },
-      ],
-      loggedInNavRoutes: [
         {
           name: 'xlsx',
           title: () => 'XLSX',
         },
+        {
+          name: 'get-file',
+          title: () => 'Get XLSX',
+        },
+      ],
+      loggedInNavRoutes: [
         {
           name: 'profile',
           title: () => 'Logged in as ' + this.currentUser.name,
