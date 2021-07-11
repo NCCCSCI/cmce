@@ -26,7 +26,7 @@ export default {
     return {
       waitingForFile: true,
       sheets: [{ name: 'NoLo', data: [{}] }],
-      ready: false,
+      downloadReady: false,
       previewButtonText: 'View',
       showPreview: false,
       previewHTML: '',
@@ -35,7 +35,6 @@ export default {
   mounted() {
     if (this.workbook() !== null) {
       this.waitingForFile = false
-      this.ready = true
     }
   },
   beforeUpdate() {
@@ -57,10 +56,12 @@ export default {
         const workbook = XLSX.read(data, { type: 'array' })
         self.setWorkbook(workbook)
         self.waitingForFile = false
+        this.ready = true
       }
       reader.readAsArrayBuffer(f)
     },
     processSheet() {
+      this.downloadReady = false
       if (this.workbook() !== null) {
         const sheets = this.workbook().Sheets
         const firstSheet = sheets[Object.keys(sheets)[0]]
@@ -96,6 +97,7 @@ export default {
           row++
         }
         this.sheets[0].data = this.getAllMaterialCostData()
+        this.downloadReady = true
       }
     },
     onView() {
@@ -156,7 +158,7 @@ export default {
         :sheet-name="sheet.name"
       />
       <XlsxDownload>
-        <button v-show="ready">Download</button>
+        <button v-show="downloadReady">Download</button>
       </XlsxDownload>
     </XlsxWorkbook>
   </Layout>
