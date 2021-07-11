@@ -2,13 +2,16 @@ import appConfig from '@src/app.config'
 import axios from 'axios'
 
 export const state = {
-  currentUser: getSavedState('auth.currentUser'),
+  currentUser: getSavedState('remote.currentUser'),
 }
 
 export const mutations = {
   SET_CURRENT_USER(state, newValue) {
     state.currentUser = newValue
-    saveState('auth.currentUser', newValue)
+    saveState('remote.currentUser', newValue)
+    if (newValue === null) {
+      clearState('remote.currentUser')
+    }
   },
 }
 
@@ -66,4 +69,8 @@ function getSavedState(key) {
 
 function saveState(key, state) {
   window.localStorage.setItem(key, JSON.stringify(state))
+}
+
+function clearState(key) {
+  window.localStorage.clear(key)
 }

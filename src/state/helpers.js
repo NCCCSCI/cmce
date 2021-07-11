@@ -1,14 +1,5 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 
-export const authComputed = {
-  ...mapState('auth', {
-    currentUser: (state) => state.currentUser,
-  }),
-  ...mapGetters('auth', ['loggedIn']),
-}
-
-export const authMethods = mapActions('auth', ['logIn', 'logOut'])
-
 export const courseComputed = {
   ...mapState('courseData', {
     courses: (state) => state.courses,
@@ -27,6 +18,9 @@ export const workbookComputed = {
 export const workbookMethods = mapActions('workbook', ['setWorkbook'])
 
 export const remoteComputed = {
+  ...mapState('remote', {
+    currentUser: (state) => state.currentUser,
+  }),
   ...mapGetters('remote', ['existingCredentials']),
 }
 

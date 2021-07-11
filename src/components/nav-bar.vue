@@ -1,5 +1,5 @@
 <script>
-import { authComputed } from '@state/helpers'
+import { remoteComputed } from '@state/helpers'
 import NavBarRoutes from './nav-bar-routes.vue'
 
 export default {
@@ -30,16 +30,11 @@ export default {
           title: 'Log out',
         },
       ],
-      loggedOutNavRoutes: [
-        /* {
-          name: 'login',
-          title: 'Log in',
-        }, */
-      ],
+      loggedOutNavRoutes: [],
     }
   },
   computed: {
-    ...authComputed,
+    ...remoteComputed,
   },
 }
 </script>
@@ -47,7 +42,7 @@ export default {
 <template>
   <ul :class="$style.container">
     <NavBarRoutes :routes="persistentNavRoutes" />
-    <NavBarRoutes v-if="loggedIn" :routes="loggedInNavRoutes" />
+    <NavBarRoutes v-if="existingCredentials" :routes="loggedInNavRoutes" />
     <NavBarRoutes v-else :routes="loggedOutNavRoutes" />
   </ul>
 </template>
