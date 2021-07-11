@@ -31,10 +31,10 @@ export default {
         },
       ],
       loggedOutNavRoutes: [
-        {
+        /* {
           name: 'login',
           title: 'Log in',
-        },
+        }, */
       ],
     }
   },

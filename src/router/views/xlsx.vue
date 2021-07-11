@@ -2,7 +2,8 @@
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main.vue'
 import {
-  courseDataComputed,
+  courseComputed,
+  courseMethods,
   workbookComputed,
   workbookMethods,
 } from '@state/helpers'
@@ -17,7 +18,6 @@ export default {
   },
   components: {
     Layout,
-
     XlsxWorkbook,
     XlsxSheet,
     XlsxDownload,
@@ -29,22 +29,22 @@ export default {
       ready: false,
       previewButtonText: 'View',
       showPreview: false,
-      previewHTML: 'cookies',
+      previewHTML: '',
     }
   },
-  beforeUpdate() {
+  mounted() {
     if (this.workbook() !== null) {
       this.waitingForFile = false
       this.ready = true
     }
   },
-  updated() {
-    this.sheets[0].data = this.getAllMaterialCostData
-    this.ready = true
+  beforeUpdate() {
     this.renderPreview()
+    this.processSheet()
   },
   methods: {
-    ...courseDataComputed,
+    ...courseComputed,
+    ...courseMethods,
     ...workbookComputed,
     ...workbookMethods,
     onChange(event) {
@@ -57,11 +57,47 @@ export default {
         const workbook = XLSX.read(data, { type: 'array' })
         self.setWorkbook(workbook)
         self.waitingForFile = false
-        self.renderPreview()
       }
       reader.readAsArrayBuffer(f)
     },
+    processSheet() {
+      if (this.workbook() !== null) {
+        const sheets = this.workbook().Sheets
+        const firstSheet = sheets[Object.keys(sheets)[0]]
 
+        const NOT_RENTAL = 'N'
+        const COLUMNS = {
+          subjectCode: 'E',
+          courseNumber: 'F',
+          sectionId: 'G',
+          note: 'H',
+          adoptionStatus: 'I',
+          materialStatus: 'K', // RQ, CH, etc
+          isbn: 'M',
+          author: 'O',
+          title: 'P',
+          rental: 'V',
+          newRetailPrice: 'Y',
+        }
+
+        let row = 2
+        while (typeof firstSheet['A' + row] !== 'undefined') {
+          const rowObj = {}
+          for (const col in COLUMNS) {
+            const cell = COLUMNS[col] + row
+            rowObj[col] =
+              typeof firstSheet[cell] !== 'undefined'
+                ? firstSheet[cell].v.toString().trim()
+                : ''
+          }
+          if (rowObj.newRetailPrice !== '' && rowObj.rental === NOT_RENTAL) {
+            this.processRow(rowObj)
+          }
+          row++
+        }
+        this.sheets[0].data = this.getAllMaterialCostData()
+      }
+    },
     onView() {
       this.showPreview = !this.showPreview
       this.previewButtonText = this.showPreview ? 'Hide' : 'Show'
@@ -109,7 +145,7 @@ export default {
     </BaseButton>
 
     <div v-show="showPreview" :class="$style.xlsxpreview">
-      <table id="previewTable" v-html="previewHTML"> </table>
+      <table id="previewTable" v-html="previewHTML"></table>
     </div>
 
     <XlsxWorkbook>

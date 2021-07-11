@@ -43,11 +43,9 @@ export default {
       })
         .then((ab) => {
           this.tryingToGetXlsx = false
-
           const data = new Uint8Array(ab)
           const workbook = XLSX.read(data, { type: 'array' })
           this.setWorkbook(workbook)
-
           this.$router.push({ name: 'xlsx' })
         })
         .catch((error) => {
@@ -76,7 +74,7 @@ export default {
       <BaseButton :disabled="tryingToGetXlsx" type="submit">
         <BaseIcon v-if="tryingToGetXlsx" name="sync" spin />
         <span v-else>
-          Log in
+          Go
         </span>
       </BaseButton>
       <p v-if="authError">
