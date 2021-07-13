@@ -24,7 +24,6 @@ export default {
   },
   data() {
     return {
-      noloThreshold: appConfig.noloThreshold,
       waitingForFile: true,
       sheets: [{ name: 'NoLo', data: [{}] }],
       downloadReady: false,
@@ -36,8 +35,11 @@ export default {
   mounted() {
     if (this.workbook() !== null) {
       this.waitingForFile = false
-      this.processSheet()
     }
+  },
+  beforeUpdate() {
+    this.renderPreview()
+    this.processSheet()
   },
   methods: {
     ...courseComputed,
@@ -54,7 +56,7 @@ export default {
         const workbook = XLSX.read(data, { type: 'array' })
         self.setWorkbook(workbook)
         self.waitingForFile = false
-        self.processSheet()
+        this.ready = true
       }
       reader.readAsArrayBuffer(f)
     },
@@ -91,12 +93,58 @@ export default {
           this.processRow(rowObj)
           row++
         }
-        this.sheets[0].data = this.getAllMaterialCostData()
+const NOLO_STYLE = // { color: '#009933', backgroundColor: '#ccffcc' };
+{ fill: { patternType: 'solid', fgColor: { rgb: '009933' }, bgColor: { rgb: 'ccffcc' }}};
+debugger
+const rawData = this.getAllMaterialCostData();
+for (let i = 0; i < rawData.length; i++) {
+const row = rawData[i];
+if (row[3] <= appConfig.noloThreshold) {
+rawData[i] = row.map ( v => {return { ...NOLO_STYLE, value: v }})
+
+
+}
+}
+ 
+        this.sheets[0].data = rawData;
         this.downloadReady = true
-        this.renderPreview()
-        this.highlightPreview()
       }
     },
+    onWorkbookChange(workbook) {
+debugger
+const sheets = workbook.Sheets
+const sheet = sheets[Object.keys(workbook.Sheets)[0]];
+if (typeof sheet === "undefined") return;
+// Thanks to: https://stackoverflow.com/questions/63920562/how-to-fill-background-color-of-row-in-node-js-xlsx-npm
+const COST_OF_MATERIALS = 'D'
+const NOLO_STYLE = { fill: { patternType: 'solid', fgColor: { rgb: '009933' }, bgColor: { rgb: 'ccffcc' }}};
+debugger;
+
+debugger 
+   let row = 1
+let costCell = COST_OF_MATERIALS + row.toString();
+
+        while (typeof sheet[costCell] !== 'undefined') {
+
+
+console.log(costCell);
+          if (typeof sheet[costCell] !== "undefined" && !isNaN(sheet[costCell].v) && sheet[costCell].v <= appConfig.noloThreshold ) {
+console.log(sheet[costCell].v)
+            let col = 'A'
+           // while (typeof sheet[cell] !== "undefined") {
+const cellRef = XLSX.utils.encode_cell({c: col, r: row});
+              cellRef.s = NOLO_STYLE;
+              col = String.fromCharCode(col.charCodeAt(0) + 1)
+console.log(col);
+           // }
+    
+          }
+          row++
+costCell = COST_OF_MATERIALS + row.toString();
+        }
+
+
+},
     onView() {
       this.showPreview = !this.showPreview
       this.previewButtonText = this.showPreview ? 'Hide' : 'Show'
@@ -119,19 +167,12 @@ export default {
           } else if (/\.\d$/.test(v)) {
             el.textContent += '0'
           }
+          const numericV = parseFloat(v)
+          if (numericV <= appConfig.noloThreshold) {
+            el.closest('tr').setAttribute('nolomaybe', 'true')
+          }
         })
       }
-    },
-    highlightPreview() {
-      document.querySelectorAll("[id^='sjs-Y']").forEach((el) => {
-        const numericV = parseFloat(el.getAttribute('v'))
-        const tr = el.closest('tr')
-        if (isNaN(numericV) || numericV <= this.noloThreshold) {
-          tr.setAttribute('nolomaybe', 'true')
-        } else {
-          tr.removeAttribute('nolomaybe')
-        }
-      })
     },
   },
 }
@@ -139,90 +180,36 @@ export default {
 
 <template>
   <Layout>
-    <h1>XLSX</h1>
-    <div :class="$style.block">
-      <span>
-        <label for="heoaFile">HEOA File</label>
-        <input
-          id="heoaFile"
-          type="file"
-          accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          @change="onFileChange"
-        />
-      </span>
-      <span>
-        <label for="noloThreshold">Threshold</label>
-        <input
-          id="noloThreshold"
-          v-model="noloThreshold"
-          :class="$style.noloThreshold"
-          type="text"
-          pattern="\d{3}"
-          min="0"
-          @change="highlightPreview"
-        />
-      </span>
-      <span>
-        <BaseButton :disabled="waitingForFile" type="button" @click="onView">
-          {{ previewButtonText }}
-        </BaseButton>
-      </span>
-      <span>
-        <XlsxWorkbook>
-          <XlsxSheet
-            v-for="sheet in sheets"
-            :key="sheet.name"
-            :collection="sheet.data"
-            :sheet-name="sheet.name"
-          />
-          <XlsxDownload>
-            <BaseButton v-show="downloadReady" type="button"
-              >Download</BaseButton
-            >
-          </XlsxDownload>
-        </XlsxWorkbook>
-      </span>
-    </div>
+    <h1>Upload</h1>
+    <input
+      type="file"
+      accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      @change="onFileChange"
+    />
+    <BaseButton :disabled="waitingForFile" type="button" @click="onView">
+      {{ previewButtonText }}
+    </BaseButton>
+
     <div v-show="showPreview" :class="$style.xlsxpreview">
-      <p
-        >The preview shows <em>all</em> the materials and highlights those less
-        than the threshold. It is intended for a quick check to ensure the
-        spreadsheet data is as expected.
-        <strong :class="$style.warning"
-          >Do not use this for cost estimates</strong
-        >.</p
-      >
       <table id="previewTable" v-html="previewHTML"></table>
     </div>
+
+    <XlsxWorkbook>
+      <XlsxSheet
+        v-for="sheet in sheets"
+        :key="sheet.name"
+        :collection="sheet.data"
+        :sheet-name="sheet.name"
+      />
+      <XlsxDownload>
+        <button v-show="downloadReady">Download</button>
+      </XlsxDownload>
+    </XlsxWorkbook>
   </Layout>
 </template>
 
 <style lang="scss" module>
 @import '@design';
-
-.block {
-  padding: 15px 0;
-  margin: 10px 0;
-  span {
-    margin: 7px;
-    div {
-      display: inline;
-    }
-  }
-  label {
-    padding-right: 10px;
-    font-weight: 600;
-  }
-}
-
-.noloThreshold {
-  width: 5rem;
-  text-align: right;
-}
-
-.warning {
-  color: #f00;
-}
 
 .xlsxpreview {
   width: 90%;

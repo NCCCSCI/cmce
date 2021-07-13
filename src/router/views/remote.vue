@@ -59,14 +59,21 @@ export default {
 
 <template>
   <Layout>
+    <h1>Get XLSX</h1>
+    <p
+      >Enter the credentials you received from the bookstore. The most recent
+      HEOA spreadsheet will be downloaded and processed.</p
+    >
     <form :class="$style.form" @submit.prevent="tryToGetXlsx">
       <BaseInputText
         v-model="username"
+        :class="$style.input"
         name="username"
         :placeholder="placeholders.username"
       />
       <BaseInputText
         v-model="password"
+        :class="$style.input"
         name="password"
         type="password"
         :placeholder="placeholders.password"
@@ -89,5 +96,9 @@ export default {
 
 .form {
   text-align: center;
+}
+.input {
+  width: 50%;
+  margin: 25px auto;
 }
 </style>

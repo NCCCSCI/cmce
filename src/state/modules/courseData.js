@@ -1,5 +1,7 @@
 const RQ = 'RQ' // Required
 const CH = 'CH' // Choice
+const NT = 'NT' // No Text
+const RENTAL = 'Y' // Rental
 
 class Material {
   constructor(obj) {
@@ -8,19 +10,26 @@ class Material {
     this.title = obj.title
     this.status = obj.materialStatus
     this.note = obj.note
-    const price = parseFloat(obj.newRetailPrice)
+    if (obj.newRetailPrice === '') {
+      obj.newRetailPrice = '0.0'
+    }
+    let price = parseFloat(obj.newRetailPrice)
     if (isNaN(price)) {
-      throw new Error('No new retail price ' + obj.newRetailPrice)
+      price = null
     }
     this.price = price
   }
 
   get signature() {
-    const re = new RegExp(`\b(THE|A|OF|IS|AN|AND|(${this.author}))\b`, 'gi')
-    return this.title
-      .replace(re, '')
-      .replace(/\W/g, '')
-      .toUpperCase()
+    if (this.title !== '') {
+      const re = new RegExp(`\b(THE|A|OF|IS|AN|AND|(${this.author}))\b`, 'gi')
+      return this.title
+        .replace(re, '')
+        .replace(/\W/g, '')
+        .toUpperCase()
+    } else {
+      return 'no-title'
+    }
   }
 }
 
@@ -37,6 +46,7 @@ class Section {
       this.materials[signature] = material
       return
     }
+
     const existing = this.materials[signature]
     if (material.price < existing.price) {
       return
@@ -47,19 +57,29 @@ class Section {
   get totalCostOfMaterials() {
     let totalCost = 0.0
     for (const m in this.materials) {
-      if (this.materials[m].status !== RQ) {
-        return '---' // if any of the materials are not REQUIRED - the cost can't be reliably reported
+      const material = this.materials[m]
+      // it's assumed the price for rentals is less than purchase, if the highest cost
+      // option is a rental, in all likelihood, rental is the only option
+      if (material.rental === RENTAL) {
+        return 'RENTAL'
       }
-      totalCost += this.materials[m].price
+      if (material.status === RQ && !isNaN(material.price)) {
+        totalCost += material.price
+      } else if (material.status === CH) {
+        return '---'
+      }
     }
-    return totalCost // .toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
+    return totalCost
   }
 
   get notes() {
+    if (Object.keys(this.materials).length === 0) {
+      return 'No text'
+    }
     let allRQ = true
     let notes = ''
     for (const m in this.materials) {
-      if (this.materials[m].status !== RQ) {
+      if (this.materials[m].status === CH) {
         allRQ = false
       }
       if (
@@ -139,21 +159,21 @@ export const mutations = {
 
 export const actions = {
   processRow({ commit, state, rootState }, rowObj) {
-    if (rowObj.materialStatus === RQ || rowObj.materialStatus === CH) {
-      try {
-        const course = new Course(rowObj.subjectCode, rowObj.courseNumber)
-        commit('ADD_COURSE', { course: course })
-        const section = new Section(rowObj.sectionId)
-        commit('ADD_SECTION', { course: course, section: section })
+    try {
+      const course = new Course(rowObj.subjectCode, rowObj.courseNumber)
+      commit('ADD_COURSE', { course: course })
+      const section = new Section(rowObj.sectionId)
+      commit('ADD_SECTION', { course: course, section: section })
+      if (rowObj.adoptionStatus !== NT) {
         const material = new Material(rowObj)
         commit('ADD_MATERIAL', {
           course: course,
           section: section,
           material: material,
         })
-      } catch (e) {
-        // TODO
       }
+    } catch (e) {
+      // TODO
     }
   },
 }
