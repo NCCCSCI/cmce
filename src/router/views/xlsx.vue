@@ -158,7 +158,6 @@ export default {
           :class="$style.noloThreshold"
           type="text"
           pattern="\d{3}"
-          min="0"
           @change="highlightPreview"
         />
       </span>
