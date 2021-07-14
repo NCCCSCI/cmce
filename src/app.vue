@@ -44,8 +44,8 @@ export default {
 }
 
 body {
-  background: url(~@assets/design/STHLM8_1535x971.jpg) no-repeat center center
-      fixed,
+  background: url(~@assets/design/various-book-books-education.jpg) no-repeat
+      center center fixed,
     #fff;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -61,13 +61,14 @@ body {
 // Base element styles
 // ===
 
-a,
-a:visited {
+a {
   color: $color-link-text;
 }
 
 h1 {
   @extend %typography-xxlarge;
+
+  border-bottom: 2px solid $color-heading-text;
 }
 
 h2 {

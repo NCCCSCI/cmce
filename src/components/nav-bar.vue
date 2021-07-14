@@ -55,10 +55,16 @@ export default {
   margin: 0 0 $size-grid-padding;
   text-align: center;
   list-style-type: none;
-
+  background-color: #fff5;
   > li {
     display: inline-block;
     margin-right: $size-grid-padding;
+  }
+  a {
+    @extend %typography-medium;
+
+    font-weight: 500;
+    color: $color-nav-link-text;
   }
 }
 </style>

@@ -10,14 +10,8 @@ export default {
   <div :class="$style.container">
     <NavBar />
     <slot />
-    <p :class="$style.credit"
-      ><a href="https://www.flickr.com/photos/41346951@N05/9563685450"
-        >"STHLM #8" by Thomas Leuthard</a
-      >
-      is licensed with CC BY 2.0. To view a copy of this license, visit
-      <a href="https://creativecommons.org/licenses/by/2.0/"
-        >https://creativecommons.org/licenses/by/2.0/</a
-      ></p
+    <p :class="$style.credit">
+      <a href="https://www.pxfuel.com/en/free-photo-jmumi">Image credit</a></p
     >
   </div>
 </template>

@@ -2,15 +2,16 @@
 $color-body-bg: transparent;
 $color-text: #fff;
 $color-heading-text: #f2f2f2;
-$color-heading-filter: drop-shadow(0 0 0.25rem $color-text);
+$color-heading-filter: drop-shadow(0 0 0.25rem #000);
 
-$color-container-bg: #000a;
+$color-container-bg: #489acef2;
 
-$color-credit: #fff;
+$color-credit: #000;
 
 // LINKS
-$color-link-text: #f90;
-$color-link-text-active: $color-text;
+$color-link-text: $color-text;
+$color-nav-link-text: #36434c;
+$color-nav-link-text-active: $color-text;
 
 // INPUTS
 $color-input-text: #000;
@@ -19,4 +20,5 @@ $color-input-border: lighten($color-heading-text, 50%);
 // BUTTONS
 $color-button-bg: $color-link-text;
 $color-button-disabled-bg: darken(desaturate($color-button-bg, 20%), 10%);
-$color-button-text: white;
+$color-button-text: #36434c;
+$color-button-border: 1px solid #777;

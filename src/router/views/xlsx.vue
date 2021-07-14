@@ -26,7 +26,7 @@ export default {
     return {
       noloThreshold: appConfig.noloThreshold,
       waitingForFile: true,
-      sheets: [{ name: 'NoLo', data: [{}] }],
+      sheets: [{ name: 'NoLo', data: [[]] }],
       downloadReady: false,
       previewButtonText: 'View',
       showPreview: false,
@@ -92,6 +92,13 @@ export default {
           row++
         }
         this.sheets[0].data = this.getAllMaterialCostData()
+        this.sheets[0].data.unshift([
+          'Subject Code',
+          'Course Number',
+          'Section Id',
+          'Estimated Cost of Materials',
+          'Notes',
+        ])
         this.downloadReady = true
         this.renderPreview()
         this.highlightPreview()
@@ -111,7 +118,7 @@ export default {
         )
         document.querySelectorAll("[id^='sjs-Y']").forEach((el) => {
           const v = el.getAttribute('v')
-          if (v === null || isNaN(v)) {
+          if (v === null) {
             return
           }
           if (v.indexOf('.') === -1) {
@@ -139,7 +146,10 @@ export default {
 
 <template>
   <Layout>
-    <h1>XLSX</h1>
+    <h1>
+      <BaseIcon name="file-excel" />
+      XLSX</h1
+    >
     <div :class="$style.block">
       <span>
         <label for="heoaFile">HEOA File</label>
@@ -152,10 +162,10 @@ export default {
       </span>
       <span>
         <label for="noloThreshold">Threshold</label>
-        <input
+        <BaseInputText
           id="noloThreshold"
           v-model="noloThreshold"
-          :class="$style.noloThreshold"
+          :class="[$style.noloThreshold, $style.input]"
           type="text"
           pattern="\d{3}"
           @change="highlightPreview"
@@ -174,7 +184,7 @@ export default {
             :collection="sheet.data"
             :sheet-name="sheet.name"
           />
-          <XlsxDownload>
+          <XlsxDownload filename="HEOA-ECOM.xlsx">
             <BaseButton v-show="downloadReady" type="button"
               >Download</BaseButton
             >
@@ -215,12 +225,14 @@ export default {
 }
 
 .noloThreshold {
+  display: inline-block;
   width: 5rem;
   text-align: right;
 }
 
 .warning {
-  color: #f00;
+  color: #354650;
+  background-color: #fff;
 }
 
 .xlsxpreview {
@@ -230,7 +242,8 @@ export default {
     max-height: 75vh;
     padding: 25px;
     overflow: auto;
-    background-color: #dddd;
+    color: #aaa;
+    background-color: #fff;
 
     tbody {
       tr {
@@ -251,12 +264,12 @@ export default {
       }
 
       tr:nth-child(odd) {
-        background-color: #7777;
+        background-color: #d4e5f0;
       }
 
       tr[nolomaybe] {
         font-weight: 600;
-        color: darkgreen;
+        color: green;
       }
     }
   }

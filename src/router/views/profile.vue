@@ -30,6 +30,6 @@ export default {
       {{ user.name }}
       Profile
     </h1>
-    <pre>{{ user }}</pre>
+    <p v-show="user.username">Logged in as {{ user.username }}</p>
   </Layout>
 </template>

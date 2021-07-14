@@ -59,7 +59,7 @@ export default {
 
 <template>
   <Layout>
-    <h1>Get XLSX</h1>
+    <h1><BaseIcon name="file-download" />Get XLSX</h1>
     <p
       >Enter the credentials you received from the bookstore. The most recent
       HEOA spreadsheet will be downloaded and processed.</p

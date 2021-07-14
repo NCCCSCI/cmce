@@ -14,7 +14,7 @@
   color: $color-button-text;
   cursor: pointer;
   background: $color-button-bg;
-  border: none;
+  border: $color-button-border;
 
   &:disabled {
     cursor: not-allowed;

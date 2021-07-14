@@ -6,7 +6,10 @@ import camelCase from 'lodash/camelCase'
 // https://fontawesome.com/icons
 fontAwesomeIconLibrary.add(
   require('@fortawesome/free-solid-svg-icons/faSync').definition,
-  require('@fortawesome/free-solid-svg-icons/faUser').definition
+  require('@fortawesome/free-solid-svg-icons/faUser').definition,
+  require('@fortawesome/free-solid-svg-icons/faFileExcel').definition,
+  require('@fortawesome/free-solid-svg-icons/faFileDownload').definition,
+  require('@fortawesome/free-solid-svg-icons/faHome').definition
 )
 
 export default {
@@ -38,6 +41,7 @@ export default {
     v-if="source === 'font-awesome'"
     v-bind="$attrs"
     :icon="name"
+    :class="$style.icon"
   />
   <span
     v-else-if="source === 'custom'"
@@ -45,3 +49,10 @@ export default {
     :class="customIconClass"
   />
 </template>
+
+<style lang="scss" module>
+@import '@design';
+.icon {
+  padding: $size-icon-padding;
+}
+</style>

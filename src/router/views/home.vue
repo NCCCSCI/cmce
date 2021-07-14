@@ -13,11 +13,21 @@ export default {
 
 <template>
   <Layout>
-    <h1>Course Material Cost Estimator</h1>
+    <h1><BaseIcon name="home" />Course Material Cost Estimator</h1>
     <p
-      >This tool will estimate the cost of course materials by section using a
-      spreadsheet from the bookstore</p
+      >This tool will estimate the cost of required course materials by section
+      using an
+      <a
+        href="https://content.efollett.com/HEOA/library/HEOATextbookProvision.pdf"
+        >HEOA</a
+      >
+      spreadsheet.</p
     >
+    <p
+      ><a href="https://github.com/bgamrat/nolo/blob/main/docs/index.md"
+        >Instructions / Documentation</a
+      >
+    </p>
     <em>Notes</em>
     <ul>
       <li>
@@ -32,11 +42,6 @@ export default {
       <li
         >Sections which are marked as <em>no text</em> are reported as zero
         cost, with the text 'No text'</li
-      >
-      <li>Notes are included in the spreadsheet</li>
-      <li
-        >The spreadsheet cannot be styled without purchasing a professional
-        license, please use Excel for highlighting</li
       >
       <li>Comments and suggestions are welcome</li>
       <li
