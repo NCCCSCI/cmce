@@ -80,7 +80,7 @@ export default {
       <section>
         <h2>Upload spreadsheet</h2>
         <p>If you have a spreadsheet from the bookstore, upload it here</p>
-        <label for="heoaFile">HEOA File</label>
+        <label :class="$style.fileLabel" for="heoaFile">HEOA File</label>
         <input
           id="heoaFile"
           type="file"
@@ -94,7 +94,7 @@ export default {
           >If you have FTP credentials from the bookstore enter them here and
           the latest spreadsheet will be downloaded.</p
         >
-        <form :class="$style.form" @submit.prevent="tryToGetXlsxFromFTP">
+        <form @submit.prevent="tryToGetXlsxFromFTP">
           <BaseInputText
             v-model="username"
             :class="$style.input"
@@ -126,13 +126,11 @@ export default {
 <style lang="scss" module>
 @import '@design';
 
-.form {
-  text-align: center;
-  label {
-    padding-right: 10px;
-    font-weight: 600;
-  }
+.fileLabel {
+  padding-right: 10px;
+  font-weight: 600;
 }
+
 .input {
   width: 50%;
   margin: 25px 0;
