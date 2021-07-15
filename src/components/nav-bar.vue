@@ -1,5 +1,5 @@
 <script>
-import { remoteComputed } from '@state/helpers'
+import { remoteComputed, workbookComputed } from '@state/helpers'
 import NavBarRoutes from './nav-bar-routes.vue'
 
 export default {
@@ -11,13 +11,16 @@ export default {
           name: 'home',
           title: 'Home',
         },
-        {
-          name: 'xlsx',
-          title: () => 'XLSX',
-        },
+
         {
           name: 'get-file',
-          title: () => 'Get XLSX',
+          title: () => 'Get Spreadsheet',
+        },
+      ],
+      fileReadyNavRoutes: [
+        {
+          name: 'xlsx',
+          title: () => 'Compute Estimates',
         },
       ],
       loggedInNavRoutes: [
@@ -35,6 +38,7 @@ export default {
   },
   computed: {
     ...remoteComputed,
+    ...workbookComputed,
   },
 }
 </script>
@@ -42,6 +46,7 @@ export default {
 <template>
   <ul :class="$style.container">
     <NavBarRoutes :routes="persistentNavRoutes" />
+    <NavBarRoutes v-if="hasWorkbook" :routes="fileReadyNavRoutes" />
     <NavBarRoutes v-if="existingCredentials" :routes="loggedInNavRoutes" />
     <NavBarRoutes v-else :routes="loggedOutNavRoutes" />
   </ul>
@@ -51,7 +56,7 @@ export default {
 @import '@design';
 
 .container {
-  padding: 0;
+  padding: 5px;
   margin: 0 0 $size-grid-padding;
   text-align: center;
   list-style-type: none;
@@ -61,9 +66,8 @@ export default {
     margin-right: $size-grid-padding;
   }
   a {
-    @extend %typography-medium;
+    @extend %typography-small;
 
-    font-weight: 500;
     color: $color-nav-link-text;
   }
 }

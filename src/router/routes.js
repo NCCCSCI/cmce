@@ -12,9 +12,9 @@ export default [
     component: () => lazyLoadView(import('@views/xlsx.vue')),
   },
   {
-    path: '/remote',
+    path: '/file',
     name: 'get-file',
-    component: () => lazyLoadView(import('@views/remote.vue')),
+    component: () => lazyLoadView(import('@views/file.vue')),
   },
   {
     path: '/profile',
@@ -64,7 +64,6 @@ export default [
       authRequired: true,
       beforeResolve(routeTo, routeFrom, next) {
         store.dispatch('remote/clearCredentials')
-
         next({ name: 'home' })
       },
     },

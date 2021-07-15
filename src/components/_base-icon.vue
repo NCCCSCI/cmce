@@ -9,6 +9,7 @@ fontAwesomeIconLibrary.add(
   require('@fortawesome/free-solid-svg-icons/faUser').definition,
   require('@fortawesome/free-solid-svg-icons/faFileExcel').definition,
   require('@fortawesome/free-solid-svg-icons/faFileDownload').definition,
+  require('@fortawesome/free-solid-svg-icons/faFileUpload').definition,
   require('@fortawesome/free-solid-svg-icons/faHome').definition
 )
 

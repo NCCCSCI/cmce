@@ -8,6 +8,13 @@ export const mutations = {
   },
 }
 
+export const getters = {
+  // Whether the user is currently logged in.
+  hasWorkbook(state) {
+    return state.workbook !== null
+  },
+}
+
 export const actions = {
   setWorkbook({ commit }, workbook) {
     commit('SET_WORKBOOK', { workbook: workbook })

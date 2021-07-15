@@ -26,7 +26,7 @@ export default {
   margin: 100px auto;
   background-color: $color-container-bg;
 }
-.credit {
+p.credit a {
   position: fixed;
   right: 5px;
   bottom: 5px;

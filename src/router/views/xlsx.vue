@@ -28,39 +28,42 @@ export default {
       waitingForFile: true,
       sheets: [{ name: 'NoLo', data: [[]] }],
       downloadReady: false,
-      previewButtonText: 'View',
-      showPreview: false,
       previewHTML: '',
+      pricesFormatted: false,
     }
   },
   mounted() {
-    if (this.workbook() !== null) {
-      this.waitingForFile = false
+    if (this.hasWorkbook()) {
       this.processSheet()
+    } else {
+      this.$router.push({ name: 'get-file' })
     }
+  },
+  updated() {
+    if (this.pricesFormatted === false) {
+      document.querySelectorAll("[id^='sjs-Y']").forEach((el) => {
+        const v = el.getAttribute('v')
+        if (v === null) {
+          return
+        }
+        if (v.indexOf('.') === -1) {
+          el.textContent += '.00'
+        } else if (/\.\d$/.test(v)) {
+          el.textContent += '0'
+        }
+      })
+      this.pricesFormatted = true
+    }
+    this.highlightPreview()
   },
   methods: {
     ...courseComputed,
     ...courseMethods,
     ...workbookComputed,
     ...workbookMethods,
-    onFileChange(event) {
-      const self = this
-      const files = event.target.files
-      const f = files[0]
-      const reader = new FileReader()
-      reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result)
-        const workbook = XLSX.read(data, { type: 'array' })
-        self.setWorkbook(workbook)
-        self.waitingForFile = false
-        self.processSheet()
-      }
-      reader.readAsArrayBuffer(f)
-    },
     processSheet() {
       this.downloadReady = false
-      if (this.workbook() !== null) {
+      if (this.hasWorkbook) {
         const sheets = this.workbook().Sheets
         const firstSheet = sheets[Object.keys(sheets)[0]]
 
@@ -101,32 +104,16 @@ export default {
         ])
         this.downloadReady = true
         this.renderPreview()
-        this.highlightPreview()
       }
-    },
-    onView() {
-      this.showPreview = !this.showPreview
-      this.previewButtonText = this.showPreview ? 'Hide' : 'Show'
     },
     renderPreview() {
       this.previewHTML = ''
-      if (this.workbook() !== null) {
+      if (this.hasWorkbook) {
         const sheetNames = this.workbook().SheetNames
         const sheet1 = sheetNames[0]
         this.previewHTML = XLSX.utils.sheet_to_html(
           this.workbook().Sheets[sheet1]
         )
-        document.querySelectorAll("[id^='sjs-Y']").forEach((el) => {
-          const v = el.getAttribute('v')
-          if (v === null) {
-            return
-          }
-          if (v.indexOf('.') === -1) {
-            el.textContent += '.00'
-          } else if (/\.\d$/.test(v)) {
-            el.textContent += '0'
-          }
-        })
       }
     },
     highlightPreview() {
@@ -148,18 +135,10 @@ export default {
   <Layout>
     <h1>
       <BaseIcon name="file-excel" />
-      XLSX</h1
+      Compute Estimates</h1
     >
+    <h2>Preview</h2>
     <div :class="$style.block">
-      <span>
-        <label for="heoaFile">HEOA File</label>
-        <input
-          id="heoaFile"
-          type="file"
-          accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          @change="onFileChange"
-        />
-      </span>
       <span>
         <label for="noloThreshold">Threshold</label>
         <BaseInputText
@@ -170,11 +149,6 @@ export default {
           pattern="\d{3}"
           @change="highlightPreview"
         />
-      </span>
-      <span>
-        <BaseButton :disabled="waitingForFile" type="button" @click="onView">
-          {{ previewButtonText }}
-        </BaseButton>
       </span>
       <span>
         <XlsxWorkbook>
@@ -192,14 +166,15 @@ export default {
         </XlsxWorkbook>
       </span>
     </div>
-    <div v-show="showPreview" :class="$style.xlsxpreview">
+
+    <div :class="$style.xlsxpreview">
       <p
         >The preview shows <em>all</em> the materials and highlights those less
         than the threshold. It is intended for a quick check to ensure the
         spreadsheet data is as expected.
         <strong :class="$style.warning"
-          >Do not use this for cost estimates</strong
-        >.</p
+          >Do not use this for cost estimates.</strong
+        ></p
       >
       <table id="previewTable" v-html="previewHTML"></table>
     </div>
@@ -210,10 +185,9 @@ export default {
 @import '@design';
 
 .block {
-  padding: 15px 0;
-  margin: 10px 0;
+  border-bottom: 1px solid #fff;
   span {
-    margin: 7px;
+    margin: 0 7px;
     div {
       display: inline;
     }
@@ -231,7 +205,7 @@ export default {
 }
 
 .warning {
-  color: #354650;
+  color: #fb8132;
   background-color: #fff;
 }
 
@@ -272,6 +246,9 @@ export default {
         color: green;
       }
     }
+  }
+  p {
+    line-height: 1.5rem;
   }
 }
 </style>

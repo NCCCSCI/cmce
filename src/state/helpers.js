@@ -13,6 +13,7 @@ export const workbookComputed = {
   ...mapState('workbook', {
     workbook: (state) => state.workbook,
   }),
+  ...mapGetters('workbook', ['hasWorkbook']),
 }
 
 export const workbookMethods = mapActions('workbook', ['setWorkbook'])
