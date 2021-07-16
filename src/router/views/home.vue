@@ -1,6 +1,7 @@
 <script>
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main.vue'
+// import documentation from '@docs/index.md'
 
 export default {
   page: {
@@ -8,6 +9,14 @@ export default {
     meta: [{ name: 'description', content: appConfig.description }],
   },
   components: { Layout },
+  /*
+TODO
+data() {
+return {
+md: documentation
+}
+}
+*/
 }
 </script>
 

@@ -69,6 +69,10 @@ h1 {
   @extend %typography-xxlarge;
 
   border-bottom: 2px solid $color-heading-text;
+
+  .icon {
+    padding: $size-icon-padding;
+  }
 }
 
 h2 {

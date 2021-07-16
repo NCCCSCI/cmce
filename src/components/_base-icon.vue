@@ -53,7 +53,4 @@ export default {
 
 <style lang="scss" module>
 @import '@design';
-.icon {
-  padding: $size-icon-padding;
-}
 </style>

@@ -14,7 +14,7 @@ export default {
 
         {
           name: 'get-file',
-          title: () => 'Get Spreadsheet',
+          title: () => 'HEOA Spreadsheet',
         },
       ],
       fileReadyNavRoutes: [
