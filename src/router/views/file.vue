@@ -21,7 +21,10 @@ export default {
   computed: {
     placeholders() {
       return process.env.NODE_ENV === 'production'
-        ? {}
+        ? {
+            username: 'username',
+            password: 'password',
+          }
         : {
             username: 'Use "demo" to log in to the test server',
             password: 'Use "password" to log in to the test server',
