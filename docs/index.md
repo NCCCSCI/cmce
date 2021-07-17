@@ -1,6 +1,6 @@
 # Course Materials Cost Estimator
 
-## Table of Contents
+## Contents
 
 - [Objective](#objective)
 - [Cost Estimation](#cost-estimation)
@@ -10,7 +10,7 @@
 
 ## Objective
 
-The objective of this tool is to efficiently estimate the cost of ownership for new materials required for each section.
+The objective of this tool is to efficiently estimate the cost of ownership for new materials required for all sections of all courses.
 
 ## Cost Estimation
 
@@ -42,13 +42,13 @@ There is no evaluation mechanism in the spreadsheet. The data may be analyzed an
 You may use Excel's Conditional Formatting to highlight rows in the spreadsheet. These instructions describe how to emphasize the courses with an estimated material cost of less than \$40.
 
 1. Select column D  
-   ![Select column D](images/excel-hints-1.png)
+   ![Select column D](../public/assets/doc-images/excel-hints-1.png)
 1. Click on _Conditional Formatting_  
-   ![Click Conditional Formatting](images/excel-hints-2.png)
+   ![Click Conditional Formatting](../public/assets/doc-images/excel-hints-2.png)
 1. Choose how you would like to highlight the estimated cost of materials  
-   ![Choose Conditional Formatting](images/excel-hints-3.png)
+   ![Choose Conditional Formatting](../public/assets/doc-images/excel-hints-3.png)
 1. Example display  
-   ![Example display](images/excel-hints-4.png)
+   ![Example display](../public/assets/doc-images/excel-hints-4.png)
 
 The spreadsheet can not be styled or customized further without a paid license. Ref: <https://gist.github.com/SheetJSDev/24b8acd317d01999d721b38de7c53021>
 

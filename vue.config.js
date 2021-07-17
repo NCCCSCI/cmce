@@ -22,6 +22,16 @@ module.exports = {
         !process.env.VUE_APP_TEST &&
         'warning'
     )
+    config.module
+      .rule()
+      .test(/\.md$/)
+
+      .use('raw-loader')
+      .loader('raw-loader')
+      .end()
+      .use('markdown-loader')
+      .loader('markdown-loader')
+      .end()
   },
   css: {
     // Enable CSS source maps.
@@ -36,7 +46,5 @@ module.exports = {
       : // Proxy API endpoints a local mock API.
         { before: require('./tests/mock-api') }),
   },
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/nolo'
-  : '/'
+  publicPath: process.env.NODE_ENV === 'production' ? '/nolo' : '/',
 }

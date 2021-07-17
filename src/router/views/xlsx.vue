@@ -205,7 +205,7 @@ export default {
 }
 
 .warning {
-  color: #fb8132;
+  color: #c44d01;
   background-color: #fff;
 }
 
@@ -216,7 +216,7 @@ export default {
     max-height: 75vh;
     padding: 25px;
     overflow: auto;
-    color: #aaa;
+    color: #626262;
     background-color: #fff;
 
     tbody {
@@ -242,8 +242,7 @@ export default {
       }
 
       tr[nolomaybe] {
-        font-weight: 600;
-        color: green;
+        background-color: #f6dccb;
       }
     }
   }

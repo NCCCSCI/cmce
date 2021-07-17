@@ -14,7 +14,7 @@ module.exports = {
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '^.+\\.js$': 'babel-jest',
-    '.+\\.(css|scss|jpe?g|png|gif|webp|svg|mp4|webm|ogg|mp3|wav|flac|aac|woff2?|eot|ttf|otf)$':
+    '.+\\.(css|scss|jpe?g|png|gif|webp|svg|mp4|webm|ogg|mp3|wav|flac|aac|woff2?|eot|ttf|otf|md)$':
       'jest-transform-stub',
   },
   moduleNameMapper: require('./aliases.config').jest,
