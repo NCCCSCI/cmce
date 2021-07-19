@@ -1,7 +1,7 @@
 <script>
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main.vue'
-import documentation from '@docs/index.md'
+import documentation from '@/README.md'
 
 export default {
   page: {
@@ -11,9 +11,7 @@ export default {
   components: { Layout },
   data() {
     return {
-      md: documentation
-        .replace(/\.\.\/public\//g, '')
-        .replace(/<h1.*<\/h1>/, ''),
+      md: documentation.replace(/public\//g, '').replace(/<h1.*<\/h1>/, ''),
     }
   },
 }

@@ -13,7 +13,7 @@ const XLSX = require('xlsx')
 
 export default {
   page: {
-    title: 'XLSX',
+    title: 'Compute Estimates',
     meta: [{ name: 'description', content: appConfig.description }],
   },
   components: {

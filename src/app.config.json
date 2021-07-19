@@ -1,6 +1,6 @@
 {
-  "title": "NoLo",
-  "description": "NoLo",
+  "title": "Course Material Cost Estimator",
+  "description": "Calculates the cost of ownership of new materials using an HEOA spreadsheet",
   "noloThreshold": 40.0,
   "targetServer": "https://www.nashuaweb.net/nolo/undex.php"
 }
