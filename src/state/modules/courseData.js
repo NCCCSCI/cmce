@@ -1,7 +1,6 @@
 const RQ = 'RQ' // Required
 const CH = 'CH' // Choice
 const NT = 'NT' // No Text
-const RENTAL = 'Y' // Rental
 
 class Material {
   constructor(obj) {
@@ -58,11 +57,6 @@ class Section {
     let totalCost = 0.0
     for (const m in this.materials) {
       const material = this.materials[m]
-      // it's assumed the price for rentals is less than purchase, if the highest cost
-      // option is a rental, in all likelihood, rental is the only option
-      if (material.rental === RENTAL) {
-        return 'RENTAL'
-      }
       if (material.status === RQ && !isNaN(material.price)) {
         totalCost += material.price
       } else if (material.status === CH) {
@@ -164,7 +158,10 @@ export const actions = {
       commit('ADD_COURSE', { course: course })
       const section = new Section(rowObj.sectionId)
       commit('ADD_SECTION', { course: course, section: section })
-      if (rowObj.adoptionStatus !== NT) {
+      if (
+        rowObj.adoptionStatus !== NT &&
+        !rowObj.title.toLowerCase().includes('subscription')
+      ) {
         const material = new Material(rowObj)
         commit('ADD_MATERIAL', {
           course: course,
