@@ -10,9 +10,23 @@ export default {
   <div :class="$style.container">
     <NavBar />
     <slot />
-    <p :class="$style.credit">
-      <a href="https://www.pxfuel.com/en/free-photo-jmumi">Image credit</a></p
-    >
+    <div :class="$style.credit">
+      <strong>Credits</strong>
+      <ul>
+        <li
+          ><a
+            href="https://circleci.com/gh/chrisvfritz/vue-enterprise-boilerplate/tree/master"
+            >boilerplate</a
+          ></li
+        >
+        <li
+          ><a href="https://www.pxfuel.com/en/free-photo-jmumi"
+            >background image</a
+          ></li
+        >
+        <li> <a href="favicon.about.txt">favicon</a></li></ul
+      >
+    </div>
   </div>
 </template>
 
@@ -26,10 +40,23 @@ export default {
   margin: 100px auto;
   background-color: $color-container-bg;
 }
-p.credit a {
+div.credit {
   position: fixed;
   right: 5px;
   bottom: 5px;
+  padding: 3px;
+  font-size: 0.8rem;
   color: $color-credit;
+  background-color: #fff;
+  * {
+    display: inline-block;
+    padding: 0;
+    margin: 1px;
+  }
+  ul {
+    li {
+      margin: 0 5px;
+    }
+  }
 }
 </style>

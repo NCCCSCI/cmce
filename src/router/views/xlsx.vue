@@ -46,9 +46,10 @@ export default {
         if (v === null) {
           return
         }
-        if (v.indexOf('.') === -1) {
+        const tc = el.textContent
+        if (tc.indexOf('.') === -1) {
           el.textContent += '.00'
-        } else if (/\.\d$/.test(v)) {
+        } else if (/\.\d$/.test(tc)) {
           el.textContent += '0'
         }
       })

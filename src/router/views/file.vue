@@ -87,7 +87,7 @@ export default {
         <input
           id="heoaFile"
           type="file"
-          accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          accept="text/plain,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           @change="onFileChange"
         />
       </section>
