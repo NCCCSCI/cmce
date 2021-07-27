@@ -33,7 +33,8 @@ class Material {
 }
 
 class Section {
-  constructor(id) {
+  constructor(crn, id) {
+    this.crn = crn
     this.id = id
     this.materials = {}
   }
@@ -120,6 +121,7 @@ export const getters = {
       for (const s in course.sections) {
         const section = course.sections[s]
         rows.push([
+          section.crn,
           course.subjectCode,
           course.courseNumber,
           section.id,
@@ -156,7 +158,7 @@ export const actions = {
     try {
       const course = new Course(rowObj.subjectCode, rowObj.courseNumber)
       commit('ADD_COURSE', { course: course })
-      const section = new Section(rowObj.sectionId)
+      const section = new Section(rowObj.crn, rowObj.sectionId)
       commit('ADD_SECTION', { course: course, section: section })
       if (
         rowObj.adoptionStatus !== NT &&

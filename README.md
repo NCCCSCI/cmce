@@ -18,7 +18,6 @@ The objective of this tool is to efficiently estimate the cost of ownership for 
 - Materials may be textbooks or digital media, or any other supporting item
 - The _highest_ cost of any given material is used. For example, if there are three options for the same book, the most expensive is used in case that is the only item available.
 - The tool tries to identify duplicate items. If there are two books, _The Instruction Book_ and _Instruction Book_, the tool will consider them the same because the important words in the title are _Instruction_ and _Book_. _Instruction Book_ and _Book Instruction_ are presumed to be different because the words are in a different order.
-- It's assumed the price for rentals is less than purchase, if the highest cost option is a rental, in all likelihood, rental is the only option and it will be noted as such in the output
 - The accuracy of the estimation will vary based on the materials - items such as clothing where multiple sizes are listed may not be accurately calculated.
 
 ## Instructions For Use
@@ -59,6 +58,5 @@ Notes in the HEOA file are included in the output, they may be preceded by addit
 1. _No text_ - no materials are listed for the section, which implies the cost of materials is zero
 1. _\*\*\* One or more of the materials is a CHOICE \*\*\*_ - the cost of materials cannot be estimated  
    because students have the option to choose between different materials. The total cost of materials will be \-\-\-.
-1. _RENTAL_ - if materials are rental-only - the cost will be reported as _RENTAL_
 
 Built with: <https://circleci.com/gh/chrisvfritz/vue-enterprise-boilerplate/tree/master>

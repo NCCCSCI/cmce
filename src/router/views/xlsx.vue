@@ -80,6 +80,7 @@ export default {
           title: 'P',
           rental: 'V',
           newRetailPrice: 'Y',
+          crn: 'AC',
         }
 
         let row = 2
@@ -97,6 +98,7 @@ export default {
         }
         this.sheets[0].data = this.getAllMaterialCostData()
         this.sheets[0].data.unshift([
+          'CRN',
           'Subject Code',
           'Course Number',
           'Section Id',
