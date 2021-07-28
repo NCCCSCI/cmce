@@ -12,6 +12,8 @@
 
 The objective of this tool is to efficiently estimate the cost of ownership for new materials required for all sections of all courses.
 
+_This tool is focused on identifying classes with no or low cost materials, use care for other purposes._
+
 ## Cost Estimation
 
 - The tool reads an HEOA spreadsheet and totals the **cost of ownership for new materials**, per section, for all courses
@@ -19,6 +21,8 @@ The objective of this tool is to efficiently estimate the cost of ownership for 
 - The _highest_ cost of any given material is used. For example, if there are three options for the same book, the most expensive is used in case that is the only item available.
 - The tool tries to identify duplicate items. If there are two books, _The Instruction Book_ and _Instruction Book_, the tool will consider them the same because the important words in the title are _Instruction_ and _Book_. _Instruction Book_ and _Book Instruction_ are presumed to be different because the words are in a different order.
 - The accuracy of the estimation will vary based on the materials - items such as clothing where multiple sizes are listed may not be accurately calculated.
+- Items with the word _subscription_ in the title will not be included in estimates because the student does not own them
+- eBooks listed as _Web_ are assumed to be _subscriptions_ and are not included
 
 ## Instructions For Use
 

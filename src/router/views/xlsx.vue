@@ -78,13 +78,16 @@ export default {
           isbn: 'M',
           author: 'O',
           title: 'P',
+          eBookType: 'T',
+          eBookFormat: 'U',
           rental: 'V',
           newRetailPrice: 'Y',
           crn: 'AC',
         }
 
         let row = 2
-        while (typeof firstSheet['A' + row] !== 'undefined') {
+        // the first cell in the row is a row count on the last row, so the second cell is used to check for the end of the data
+        while (typeof firstSheet['B' + row] !== 'undefined') {
           const rowObj = {}
           for (const col in COLUMNS) {
             const cell = COLUMNS[col] + row

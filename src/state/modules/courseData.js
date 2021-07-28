@@ -1,6 +1,8 @@
 const RQ = 'RQ' // Required
 const CH = 'CH' // Choice
 const NT = 'NT' // No Text
+const WEB = 'WEB' // Web eBook (subscription)
+const subscription = 'subscription' // (subscription)
 
 class Material {
   constructor(obj) {
@@ -21,9 +23,11 @@ class Material {
 
   get signature() {
     if (this.title !== '') {
-      const re = new RegExp(`\b(THE|A|OF|IS|AN|AND|(${this.author}))\b`, 'gi')
+      const re1 = new RegExp(`\b(THE|A|OF|IS|AN|AND|(${this.author}))\b`, 'gi')
+      const re2 = /(\s*\([^)]+\))/g
       return this.title
-        .replace(re, '')
+        .replace(re1, '')
+        .replace(re2, '')
         .replace(/\W/g, '')
         .toUpperCase()
     } else {
@@ -61,7 +65,7 @@ class Section {
       if (material.status === RQ && !isNaN(material.price)) {
         totalCost += material.price
       } else if (material.status === CH) {
-        return '---'
+        totalCost += material.price
       }
     }
     return totalCost
@@ -160,17 +164,21 @@ export const actions = {
       commit('ADD_COURSE', { course: course })
       const section = new Section(rowObj.crn, rowObj.sectionId)
       commit('ADD_SECTION', { course: course, section: section })
-      if (
-        rowObj.adoptionStatus !== NT &&
-        !rowObj.title.toLowerCase().includes('subscription')
-      ) {
-        const material = new Material(rowObj)
-        commit('ADD_MATERIAL', {
-          course: course,
-          section: section,
-          material: material,
-        })
+      if (rowObj.adoptionStatus === NT) {
+        return
       }
+      if (rowObj.title.toLowerCase().includes(subscription)) {
+        return
+      }
+      if (rowObj.eBookType.toUpperCase() === WEB) {
+        return
+      }
+      const material = new Material(rowObj)
+      commit('ADD_MATERIAL', {
+        course: course,
+        section: section,
+        material: material,
+      })
     } catch (e) {
       // TODO
     }

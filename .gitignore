@@ -4,6 +4,8 @@ Thumbs.db
 
 # Dependencies
 node_modules/
+node_modules/xlsx/*
+!node_modules/xlsx/xlsx.js
 
 # Dev/Build Artifacts
 /dist/
