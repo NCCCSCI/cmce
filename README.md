@@ -17,12 +17,13 @@ _This tool is focused on identifying classes with no or low cost materials, use 
 ## Cost Estimation
 
 - The tool reads an HEOA spreadsheet and totals the **cost of ownership for new materials**, per section, for all courses
-- Materials may be textbooks or digital media, or any other supporting item
+- Materials may be textbooks, digital media, or any other supporting item
 - The _highest_ cost of any given material is used. For example, if there are three options for the same book, the most expensive is used in case that is the only item available.
 - The tool tries to identify duplicate items. If there are two books, _The Instruction Book_ and _Instruction Book_, the tool will consider them the same because the important words in the title are _Instruction_ and _Book_. _Instruction Book_ and _Book Instruction_ are presumed to be different because the words are in a different order.
 - The accuracy of the estimation will vary based on the materials - items such as clothing where multiple sizes are listed may not be accurately calculated.
 - Items with the word _subscription_ in the title will not be included in estimates because the student does not own them
-- eBooks listed as _Web_ are assumed to be _subscriptions_ and are not included
+- eBooks listed as _Web_ are assumed to be _subscriptions_ and are not included, unless no other materials are specified
+- Materials listed as _Downloadable_ are included as ownership is implied
 
 ## Instructions For Use
 
@@ -60,7 +61,6 @@ The spreadsheet can not be styled or customized further without a paid license. 
 Notes in the HEOA file are included in the output, they may be preceded by additional notes as follows:
 
 1. _No text_ - no materials are listed for the section, which implies the cost of materials is zero
-1. _\*\*\* One or more of the materials is a CHOICE \*\*\*_ - the cost of materials cannot be estimated  
-   because students have the option to choose between different materials. The total cost of materials will be \-\-\-.
+1. _\*\*\* One or more of the materials is a CHOICE \*\*\*_ - the total cost of materials will not exceed the value shown, but it is likely less.
 
 Built with: <https://circleci.com/gh/chrisvfritz/vue-enterprise-boilerplate/tree/master>

@@ -19,6 +19,7 @@ export default {
             >boilerplate</a
           ></li
         >
+        <li><a href="https://vue-xlsx.netlify.app/">Vue-XLSX</a></li>
         <li
           ><a href="https://www.pxfuel.com/en/free-photo-jmumi"
             >background image</a

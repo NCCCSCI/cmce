@@ -11,6 +11,8 @@ class Material {
     this.title = obj.title
     this.status = obj.materialStatus
     this.note = obj.note
+    this.itemTypeIndicator = obj.itemTypeIndicator
+    this.eBookType = obj.eBookType
     if (obj.newRetailPrice === '') {
       obj.newRetailPrice = '0.0'
     }
@@ -60,13 +62,24 @@ class Section {
 
   get totalCostOfMaterials() {
     let totalCost = 0.0
+    let totalWebCost = 0.0
     for (const m in this.materials) {
       const material = this.materials[m]
-      if (material.status === RQ && !isNaN(material.price)) {
-        totalCost += material.price
-      } else if (material.status === CH) {
-        totalCost += material.price
+      if (
+        !isNaN(material.price) &&
+        (material.status === RQ || material.status === CH)
+      ) {
+        if (material.eBookType === WEB) {
+          totalWebCost += material.price
+        } else {
+          totalCost += material.price
+        }
       }
+    }
+    // this prevents courses with web only resources from being reported as zero cost
+    // in most casts, web cost is less than print cost and it is an alternate version of the text
+    if (totalCost === 0.0 && totalWebCost !== 0.0) {
+      totalCost += totalWebCost
     }
     return totalCost
   }
@@ -78,18 +91,16 @@ class Section {
     let allRQ = true
     let notes = ''
     for (const m in this.materials) {
-      if (this.materials[m].status === CH) {
+      const material = this.materials[m]
+      if (material.status === CH) {
         allRQ = false
       }
-      if (
-        this.materials[m].note !== '' &&
-        notes.indexOf(this.materials[m].note) === -1
-      ) {
-        notes += this.materials[m].note + '  \n'
+      if (material.note !== '' && notes.indexOf(material.note) === -1) {
+        notes += material.note + ' '
       }
     }
     if (!allRQ) {
-      notes = '*** One or more of the materials is a CHOICE ***  \n' + notes
+      notes = '*** One or more of the materials is a CHOICE *** ' + notes
     }
     return notes
   }
@@ -168,9 +179,6 @@ export const actions = {
         return
       }
       if (rowObj.title.toLowerCase().includes(subscription)) {
-        return
-      }
-      if (rowObj.eBookType.toUpperCase() === WEB) {
         return
       }
       const material = new Material(rowObj)

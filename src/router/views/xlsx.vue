@@ -75,6 +75,7 @@ export default {
           note: 'H',
           adoptionStatus: 'I',
           materialStatus: 'K', // RQ, CH, etc
+          itemTypeIndicator: 'L',
           isbn: 'M',
           author: 'O',
           title: 'P',
