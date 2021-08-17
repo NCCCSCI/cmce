@@ -43,6 +43,7 @@ class Section {
     this.crn = crn
     this.id = id
     this.materials = {}
+    this.changedSinceLastRun = false
   }
 
   addMaterial(material) {
@@ -142,6 +143,7 @@ export const getters = {
           section.id,
           section.totalCostOfMaterials,
           section.notes,
+          section.changedSinceLastRun ? 'change' : '',
         ])
       }
     }
@@ -159,6 +161,12 @@ export const mutations = {
 
   ADD_SECTION(state, payload) {
     state.courses[payload.course.signature].addSection(payload.section)
+  },
+
+  SET_SECTION_CHANGED(state, payload) {
+    state.courses[payload.courseSignature].sections[
+      payload.sectionId
+    ].changedSinceLastRun = true
   },
 
   ADD_MATERIAL(state, payload) {
@@ -189,6 +197,28 @@ export const actions = {
       })
     } catch (e) {
       // TODO
+    }
+  },
+  deltaCheck({ commit, state }) {
+    for (const c in state.courses) {
+      const course = state.courses[c]
+      for (const s in course.sections) {
+        const section = course.sections[s]
+        const totalCostOfMaterials = section.totalCostOfMaterials
+        this.dispatch('courseData/db/updateDB', {
+          courseSignature: course.signature,
+          sectionId: section.id,
+          totalCostOfMaterials: totalCostOfMaterials,
+        })
+      }
+    }
+
+    for (const delta in state.db.delta) {
+      const [courseSignature, sectionId] = delta.split('-')
+      commit('SET_SECTION_CHANGED', {
+        courseSignature: courseSignature,
+        sectionId: sectionId,
+      })
     }
   },
 }

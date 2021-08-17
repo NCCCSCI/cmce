@@ -1,4 +1,5 @@
 {
+  "version": 0.1,
   "title": "Course Material Cost Estimator",
   "description": "Calculates the cost of ownership of new materials using an HEOA spreadsheet",
   "noloThreshold": 40.0,

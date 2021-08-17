@@ -14,11 +14,11 @@ export default {
       <strong>Credits</strong>
       <ul>
         <li
-          ><a
-            href="https://circleci.com/gh/chrisvfritz/vue-enterprise-boilerplate/tree/master"
+          ><a href="https://github.com/bencodezen/vue-enterprise-boilerplate"
             >boilerplate</a
           ></li
         >
+        <li><a href="https://github.com/SheetJS/sheetjs">SheetJS</a></li>
         <li><a href="https://vue-xlsx.netlify.app/">Vue-XLSX</a></li>
         <li
           ><a href="https://www.pxfuel.com/en/free-photo-jmumi"

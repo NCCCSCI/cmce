@@ -100,6 +100,7 @@ export default {
           this.processRow(rowObj)
           row++
         }
+        this.deltaCheck()
         this.sheets[0].data = this.getAllMaterialCostData()
         this.sheets[0].data.unshift([
           'CRN',
