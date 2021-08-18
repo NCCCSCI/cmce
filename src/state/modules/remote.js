@@ -24,11 +24,11 @@ export const getters = {
 
 export const actions = {
   // Uses the username/password to request the file from the serves
-  getFile({ commit, dispatch, getters }, { username, password } = {}) {
+  getFile({ commit, dispatch, getters }, { storeId, username, password } = {}) {
     return axios
       .post(
         appConfig.targetServer,
-        { username: username, password: password },
+        { store_id: storeId, username: username, password: password },
         { responseType: 'blob' }
       )
       .then((response) => {

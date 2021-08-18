@@ -12,6 +12,7 @@ export default {
   components: { Layout },
   data() {
     return {
+      storeId: '',
       username: '',
       password: '',
       ftpAuthError: null,
@@ -22,10 +23,12 @@ export default {
     placeholders() {
       return process.env.NODE_ENV === 'production'
         ? {
+            storeId: 'store id',
             username: 'username',
             password: 'password',
           }
         : {
+            storeId: 'Use anything',
             username: 'Use "demo" to log in to the test server',
             password: 'Use "password" to log in to the test server',
           }
@@ -54,6 +57,7 @@ export default {
       // Reset the authError if it existed.
       this.authError = null
       return this.getFile({
+        storeId: this.storeId,
         username: this.username,
         password: this.password,
       })
@@ -98,6 +102,12 @@ export default {
           the latest spreadsheet will be downloaded.</p
         >
         <form @submit.prevent="tryToGetXlsxFromFTP">
+          <BaseInputText
+            v-model="storeId"
+            :class="$style.input"
+            name="store_id"
+            :placeholder="placeholders.storeId"
+          />
           <BaseInputText
             v-model="username"
             :class="$style.input"
