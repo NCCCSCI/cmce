@@ -17,6 +17,8 @@ export default {
       password: '',
       ftpAuthError: null,
       tryingToGetXlsxFromFTP: false,
+      error: false,
+      errorMessage: '',
     }
   },
   computed: {
@@ -53,6 +55,8 @@ export default {
     // Try to log the user in with the username
     // and password they provided.
     tryToGetXlsxFromFTP() {
+      this.error = false
+      this.errorMessage = ''
       this.tryingToGetXlsxFromFTP = true
       // Reset the authError if it existed.
       this.authError = null
@@ -61,16 +65,26 @@ export default {
         username: this.username,
         password: this.password,
       })
-        .then((ab) => {
+        .then((resp) => {
           this.tryingToGetXlsxFromFTP = false
-          const data = new Uint8Array(ab)
-          const workbook = XLSX.read(data, { type: 'array' })
-          this.setWorkbook(workbook)
-          this.$router.push({ name: 'xlsx' })
+          if (
+            typeof resp.response !== 'undefined' &&
+            typeof resp.response.status !== 'undefined'
+          ) {
+            this.error = true
+            this.errorMessage = resp.response.statusText
+          } else {
+            const ab = resp
+            const data = new Uint8Array(ab)
+            const workbook = XLSX.read(data, { type: 'array' })
+            this.setWorkbook(workbook)
+            this.$router.push({ name: 'xlsx' })
+          }
         })
         .catch((error) => {
           this.tryingToGetXlsxFromFTP = false
-          this.ftpAuthError = error
+          this.error = true
+          this.errorMessage = error
         })
     },
   },
@@ -84,6 +98,7 @@ export default {
         >File <BaseIcon name="file-upload" /> Upload /
         <BaseIcon name="file-download" /> Download</h1
       >
+      <p v-if="error" :class="$style.error">{{ errorMessage }}</p>
       <section>
         <h2>Upload spreadsheet</h2>
         <p>If you have a spreadsheet from the bookstore, upload it here</p>
@@ -147,5 +162,12 @@ export default {
 .input {
   width: 50%;
   margin: 25px 0;
+}
+p.error {
+  padding: 15px;
+  margin: 25px 0;
+  color: #fff;
+  background-color: #bc5929;
+  box-shadow: 0 0 5px #494a44;
 }
 </style>

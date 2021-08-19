@@ -63,4 +63,8 @@ Notes in the HEOA file are included in the output, they may be preceded by addit
 1. _No text_ - no materials are listed for the section, which implies the cost of materials is zero
 1. _\*\*\* One or more of the materials is a CHOICE \*\*\*_ - the total cost of materials will not exceed the value shown, but it is likely less.
 
-Built with: <https://circleci.com/gh/chrisvfritz/vue-enterprise-boilerplate/tree/master>
+### Credits
+
+- <https://github.com/bencodezen/vue-enterprise-boilerplate>
+- <https://github.com/SheetJS/sheetjs>
+- <https://vue-xlsx.netlify.app/>

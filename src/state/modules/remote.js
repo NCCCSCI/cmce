@@ -40,16 +40,13 @@ export const actions = {
           name: username,
         }
         commit('SET_CURRENT_USER', user)
-
         return new Response(response.data).arrayBuffer()
       })
       .catch((error) => {
         if (error.response && error.response.status >= 400) {
           commit('SET_CURRENT_USER', null)
-        } else {
-          console.warn(error)
         }
-        return null
+        return error
       })
   },
 

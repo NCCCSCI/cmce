@@ -87,7 +87,7 @@ class Section {
 
   get notes() {
     if (Object.keys(this.materials).length === 0) {
-      return 'No text'
+      return 'No materials'
     }
     let allRQ = true
     let notes = ''
@@ -200,19 +200,21 @@ export const actions = {
     }
   },
   deltaCheck({ commit, state }) {
+    // update the database - persistent storage
+    // this also sets up the delta data
     for (const c in state.courses) {
       const course = state.courses[c]
       for (const s in course.sections) {
         const section = course.sections[s]
-        const totalCostOfMaterials = section.totalCostOfMaterials
         this.dispatch('courseData/db/updateDB', {
           courseSignature: course.signature,
           sectionId: section.id,
-          totalCostOfMaterials: totalCostOfMaterials,
+          totalCostOfMaterials: section.totalCostOfMaterials,
         })
       }
     }
 
+    // use the delta data to flag classes where the cost of materials changed
     for (const delta in state.db.delta) {
       const [courseSignature, sectionId] = delta.split('-')
       commit('SET_SECTION_CHANGED', {
