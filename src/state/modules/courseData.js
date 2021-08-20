@@ -1,7 +1,15 @@
+// adoption status
+const C = 'C' // Confirmed
+const NT = 'NT' // No Text
+
+// item type indicator
 const RQ = 'RQ' // Required
 const CH = 'CH' // Choice
-const NT = 'NT' // No Text
+
+// eBook type
 const WEB = 'WEB' // Web eBook (subscription)
+
+// text which may be in the title to indicate subscription items
 const subscription = 'subscription' // (subscription)
 
 class Material {
@@ -14,7 +22,9 @@ class Material {
     this.itemTypeIndicator = obj.itemTypeIndicator
     this.eBookType = obj.eBookType
     if (obj.newRetailPrice === '') {
-      obj.newRetailPrice = '0.0'
+      if (obj.usedRetailPrice !== '') {
+        obj.newRetailPrice = obj.usedRetailPrice
+      }
     }
     let price = parseFloat(obj.newRetailPrice)
     if (isNaN(price)) {
@@ -39,9 +49,11 @@ class Material {
 }
 
 class Section {
-  constructor(crn, id) {
+  constructor(crn, id, instructorLastName, instructorFirstName) {
     this.crn = crn
     this.id = id
+    this.instructorLastName = instructorLastName
+    this.instructorFirstName = instructorFirstName
     this.materials = {}
     this.changedSinceLastRun = false
   }
@@ -82,6 +94,7 @@ class Section {
     if (totalCost === 0.0 && totalWebCost !== 0.0) {
       totalCost += totalWebCost
     }
+
     return totalCost
   }
 
@@ -115,8 +128,8 @@ class Course {
   }
 
   addSection(section) {
-    if (typeof this.sections[section.id] === 'undefined') {
-      this.sections[section.id] = section
+    if (typeof this.sections[section.crn] === 'undefined') {
+      this.sections[section.crn] = section
     }
   }
 
@@ -143,7 +156,9 @@ export const getters = {
           section.id,
           section.totalCostOfMaterials,
           section.notes,
-          section.changedSinceLastRun ? 'change' : '',
+          section.instructorLastName,
+          section.instructorFirstName,
+          section.changedSinceLastRun ? 'changed' : '',
         ])
       }
     }
@@ -152,6 +167,10 @@ export const getters = {
 }
 
 export const mutations = {
+  CLEAR_COURSES(state) {
+    state.courses = {}
+  },
+
   ADD_COURSE(state, payload) {
     const signature = payload.course.signature
     if (typeof state.courses[signature] === 'undefined') {
@@ -164,24 +183,36 @@ export const mutations = {
   },
 
   SET_SECTION_CHANGED(state, payload) {
-    state.courses[payload.courseSignature].sections[
-      payload.sectionId
+    state.courses[payload.course.signature].sections[
+      payload.section.crn
     ].changedSinceLastRun = true
   },
 
   ADD_MATERIAL(state, payload) {
     state.courses[payload.course.signature].sections[
-      payload.section.id
+      payload.section.crn
     ].addMaterial(payload.material)
   },
 }
 
 export const actions = {
+  clear({ commit }) {
+    commit('CLEAR_COURSES')
+  },
+
   processRow({ commit, state, rootState }, rowObj) {
     try {
+      if (rowObj.adoptionStatus !== C && rowObj.adoptionStatus !== NT) {
+        return
+      }
       const course = new Course(rowObj.subjectCode, rowObj.courseNumber)
       commit('ADD_COURSE', { course: course })
-      const section = new Section(rowObj.crn, rowObj.sectionId)
+      const section = new Section(
+        rowObj.crn,
+        rowObj.sectionId,
+        rowObj.instructorLastName,
+        rowObj.instructorFirstName
+      )
       commit('ADD_SECTION', { course: course, section: section })
       if (rowObj.adoptionStatus === NT) {
         return
@@ -207,20 +238,14 @@ export const actions = {
       for (const s in course.sections) {
         const section = course.sections[s]
         this.dispatch('courseData/db/updateDB', {
-          courseSignature: course.signature,
-          sectionId: section.id,
+          crn: section.crn,
           totalCostOfMaterials: section.totalCostOfMaterials,
+        }).then((changed) => {
+          if (changed) {
+            commit('SET_SECTION_CHANGED', { course: course, section: section })
+          }
         })
       }
-    }
-
-    // use the delta data to flag classes where the cost of materials changed
-    for (const delta in state.db.delta) {
-      const [courseSignature, sectionId] = delta.split('-')
-      commit('SET_SECTION_CHANGED', {
-        courseSignature: courseSignature,
-        sectionId: sectionId,
-      })
     }
   },
 }

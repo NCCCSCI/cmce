@@ -83,6 +83,9 @@ export default {
           eBookFormat: 'U',
           rental: 'V',
           newRetailPrice: 'Y',
+          usedRetailPrice: 'Z',
+          instructorLastName: 'AE',
+          instructorFirstName: 'AF',
           crn: 'AC',
         }
 
@@ -128,12 +131,14 @@ export default {
       document.querySelectorAll("[id^='sjs-Y']").forEach((el) => {
         const numericV = parseFloat(el.getAttribute('v'))
         const tr = el.closest('tr')
-        if (isNaN(numericV) || numericV <= this.noloThreshold) {
-          tr.setAttribute('nolomaybe', 'true')
-        } else {
-          tr.removeAttribute('nolomaybe')
-        }
+        tr.toggleAttribute(
+          'nolomaybe',
+          isNaN(numericV) || numericV <= this.noloThreshold
+        )
       })
+    },
+    toggleConcise() {
+      document.getElementById('previewTable').toggleAttribute('concise')
     },
   },
 }
@@ -177,14 +182,14 @@ export default {
 
     <div :class="$style.xlsxpreview">
       <p
-        >The preview shows <em>all</em> the materials and highlights those less
-        than the threshold. It is intended for a quick check to ensure the
-        spreadsheet data is as expected.
+        >The preview shows <em @click="toggleConcise">all</em> the materials and
+        highlights those less than the threshold. It is intended for a quick
+        check to ensure the spreadsheet data is as expected.
         <strong :class="$style.warning"
           >Do not use this for cost estimates.</strong
         ></p
       >
-      <table id="previewTable" v-html="previewHTML"></table>
+      <table id="previewTable" concise v-html="previewHTML"></table>
     </div>
   </Layout>
 </template>
@@ -228,23 +233,6 @@ export default {
     background-color: #fff;
 
     tbody {
-      tr {
-        td {
-          display: none;
-        }
-        td:nth-child(5),
-        td:nth-child(6),
-        td:nth-child(7),
-        td:nth-child(15),
-        td:nth-child(16),
-        td:nth-child(25) {
-          display: table-cell;
-        }
-        td:nth-child(25) {
-          text-align: right;
-        }
-      }
-
       tr:nth-child(odd) {
         background-color: #d4e5f0;
       }
@@ -252,6 +240,22 @@ export default {
       tr[nolomaybe] {
         background-color: #f6dccb;
       }
+    }
+  }
+  table[concise] tbody tr {
+    td {
+      display: none;
+    }
+    td:nth-child(5),
+    td:nth-child(6),
+    td:nth-child(7),
+    td:nth-child(15),
+    td:nth-child(16),
+    td:nth-child(25) {
+      display: table-cell;
+    }
+    td:nth-child(25) {
+      text-align: right;
     }
   }
   p {

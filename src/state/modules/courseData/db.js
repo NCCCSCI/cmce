@@ -2,7 +2,6 @@
 
 export const state = {
   db: null,
-  delta: [],
 }
 
 var gen
@@ -10,60 +9,6 @@ var gen
 export const mutations = {
   SET_DB(state, payload) {
     state.db = payload.db
-  },
-
-  UPDATE_DB(state, payload) {
-    // thanks to: https://stackoverflow.com/a/11045107/2182349
-    function* generator(state, payload) {
-      const sectionSignature = payload.courseSignature + '-' + payload.sectionId
-      const totalCostOfMaterials = payload.totalCostOfMaterials
-
-      const objectStore = state.db
-        .transaction(['sections'], 'readwrite')
-        .objectStore('sections')
-      objectStore.index('signature')
-      const request = objectStore.get(sectionSignature)
-
-      request.onsuccess = grabEventAndContinueHandler
-
-      let genEvent = yield
-
-      if (typeof genEvent.target.result === 'undefined') {
-        // entry doesn't exist, add it
-        const obj = {}
-        obj.s = sectionSignature
-        obj.tcom = totalCostOfMaterials
-        obj.chg = false
-        obj.upd = null
-        const requestAdd = objectStore.add(obj)
-
-        requestAdd.oncompleted = grabEventAndContinueHandler
-        genEvent = yield
-      } else {
-        // get the old value, check it, update it
-        const data = genEvent.target.result
-
-        data.chg = false
-        data.upd = Date.now()
-        if (data.tcom !== totalCostOfMaterials) {
-          data.tcom = totalCostOfMaterials
-          data.chg = true
-          state.delta.push(sectionSignature)
-        }
-        // Put this updated object back into the database.
-        const requestUpdate = objectStore.put(data)
-
-        requestUpdate.oncompleted = grabEventAndContinueHandler
-        genEvent = yield
-      }
-    }
-
-    const gen = generator(state, payload)
-    gen.next()
-
-    function grabEventAndContinueHandler(event) {
-      gen.next(event)
-    }
   },
 }
 
@@ -75,7 +20,6 @@ export const getters = {
 
 export const actions = {
   init({ commit }) {
-    // In the following line, you should include the prefixes of implementations you want to test.
     if (typeof window.indexedDB === 'undefined') {
       window.indexedDB =
         window.indexedDB ||
@@ -107,15 +51,59 @@ export const actions = {
 
     db.onupgradeneeded = function(event) {
       const ldb = event.target.result
-      const objectStore = ldb.createObjectStore('sections', { keyPath: 's' })
-      objectStore.createIndex('signature', 's', { unique: true })
+      const objectStore = ldb.createObjectStore('sections', { keyPath: 'crn' })
+      objectStore.createIndex('sections', 'crn', { unique: true })
     }
   },
-  updateDB({ commit }, data) {
-    commit('UPDATE_DB', {
-      courseSignature: data.courseSignature,
-      sectionId: data.sectionId,
-      totalCostOfMaterials: data.totalCostOfMaterials,
+  updateDB({ state }, payload) {
+    return new Promise((resolve) => {
+      // thanks to: https://stackoverflow.com/a/11045107/2182349
+      function* generator(state, payload) {
+        let data
+        let changed = false
+        const totalCostOfMaterials = payload.totalCostOfMaterials
+
+        const request = objectStore.get(payload.crn)
+        request.onsuccess = grabEventAndContinueHandler
+        const genEvent = yield
+        if (typeof genEvent.target.result === 'undefined') {
+          // entry doesn't exist, add it
+          data = {}
+          data.crn = payload.crn
+          data.tcom = totalCostOfMaterials
+          changed = true
+          const requestAdd = objectStore.add(data)
+          requestAdd.onsuccess = grabEventAndContinueHandler
+          yield
+        } else {
+          // get the old value, check it, update it
+          data = genEvent.target.result
+          if (data.tcom !== totalCostOfMaterials) {
+            data.tcom = totalCostOfMaterials
+            changed = true
+          }
+          // put updated object back into the database.
+          const requestUpdate = objectStore.put(data)
+          requestUpdate.onsuccess = grabEventAndContinueHandler
+          yield
+        }
+        return changed
+      }
+
+      const objectStore = state.db
+        .transaction(['sections'], 'readwrite')
+        .objectStore('sections')
+      objectStore.index('sections')
+
+      const gen = generator(state, payload)
+      gen.next()
+
+      function grabEventAndContinueHandler(event) {
+        const result = gen.next(event)
+        if (result.done) {
+          resolve(result.value)
+        }
+      }
     })
   },
 }

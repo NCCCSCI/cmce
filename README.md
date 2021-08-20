@@ -42,6 +42,8 @@ The **Download** button will deliver a spreadsheet with the estimated cost of ma
 
 ## Cost Estimation Spreadsheet
 
+The cost estimation spreadsheet includes all the classes in the HEOA spreadsheet. Use the CRN number for class identification.
+
 ### Highlighting
 
 There is no evaluation mechanism in the spreadsheet. The data may be analyzed any way.
