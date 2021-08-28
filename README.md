@@ -4,6 +4,7 @@
 
 - [Objective](#objective)
 - [Cost Estimation](#cost-estimation)
+- [Deltas](#deltas)
 - [Instructions for Use](#instructions-for-use)
 - [HEOA Spreadsheet](#heoa-spreadsheet)
 - [Notes](#notes)
@@ -25,6 +26,12 @@ _This tool is focused on identifying classes with no or low cost materials, use 
 - eBooks listed as _Web_ are assumed to be _subscriptions_ and are not included, unless no other materials are specified
 - Materials listed as _Downloadable_ are included as ownership is implied
 - Include a disclaimer with the results, for example: _Be sure to check the bookstore site, and consult with the instructor for the class prior to registration._
+
+## Deltas
+
+The estimator includes a local delta check. The expectation is that most people will run this tool from the same machine and that it will be used for a single school/bookstore.
+
+Each time the cost of materials is estimated, the costs are stored locally. The next time the tool runs, it will add the text _changed_ to any class that has a different cost of materials.
 
 ## Instructions For Use
 

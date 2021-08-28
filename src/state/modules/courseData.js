@@ -230,14 +230,14 @@ export const actions = {
       // TODO
     }
   },
-  deltaCheck({ commit, state }) {
+  async deltaCheck({ commit, state }) {
     // update the database - persistent storage
     // this also sets up the delta data
     for (const c in state.courses) {
       const course = state.courses[c]
       for (const s in course.sections) {
         const section = course.sections[s]
-        this.dispatch('courseData/db/updateDB', {
+        await this.dispatch('courseData/db/updateDB', {
           crn: section.crn,
           totalCostOfMaterials: section.totalCostOfMaterials,
         }).then((changed) => {
