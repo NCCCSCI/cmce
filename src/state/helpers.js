@@ -28,7 +28,7 @@ export const remoteComputed = {
   ...mapState('remote', {
     currentUser: (state) => state.currentUser,
   }),
-  ...mapGetters('remote', ['existingCredentials']),
+  ...mapGetters('remote', ['existingCredentials', 'getCurrentUser']),
 }
 
 export const remoteMethods = mapActions('remote', [

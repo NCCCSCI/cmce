@@ -80,3 +80,7 @@ Notes in the HEOA file are included in the output, they may be preceded by addit
 - <https://github.com/bencodezen/vue-enterprise-boilerplate>
 - <https://github.com/SheetJS/sheetjs>
 - <https://vue-xlsx.netlify.app/>
+
+### Source
+
+- <https://github.com/bgamrat/nolo>

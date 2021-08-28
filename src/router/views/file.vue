@@ -1,6 +1,6 @@
 <script>
 import Layout from '@layouts/main.vue'
-import { remoteMethods, workbookMethods } from '@state/helpers'
+import { remoteComputed, remoteMethods, workbookMethods } from '@state/helpers'
 
 const XLSX = require('xlsx')
 
@@ -21,22 +21,16 @@ export default {
       errorMessage: '',
     }
   },
-  computed: {
-    placeholders() {
-      return process.env.NODE_ENV === 'production'
-        ? {
-            storeId: 'store id',
-            username: 'username',
-            password: 'password',
-          }
-        : {
-            storeId: 'Use anything',
-            username: 'Use "demo" to log in to the test server',
-            password: 'Use "password" to log in to the test server',
-          }
-    },
+  mounted() {
+    const currentUser = this.getCurrentUser()
+    if (currentUser !== null) {
+      this.storeId = currentUser.storeId
+      this.username = currentUser.username
+      this.password = currentUser.password
+    }
   },
   methods: {
+    ...remoteComputed,
     ...remoteMethods,
     ...workbookMethods,
     onFileChange(event) {
@@ -121,20 +115,20 @@ export default {
             v-model="storeId"
             :class="$style.input"
             name="store_id"
-            :placeholder="placeholders.storeId"
+            placeholder="storeId"
           />
           <BaseInputText
             v-model="username"
             :class="$style.input"
             name="username"
-            :placeholder="placeholders.username"
+            placeholder="username"
           />
           <BaseInputText
             v-model="password"
             :class="$style.input"
             name="password"
             type="password"
-            :placeholder="placeholders.password"
+            placeholder="password"
           />
           <BaseButton :disabled="tryingToGetXlsxFromFTP" type="submit">
             <BaseIcon v-if="tryingToGetXlsxFromFTP" name="sync" spin />

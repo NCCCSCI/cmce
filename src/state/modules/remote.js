@@ -1,16 +1,18 @@
 import appConfig from '@src/app.config'
 import axios from 'axios'
 
+const LOCAL_STORAGE_KEY = 'cmce.remote.currentUser'
+
 export const state = {
-  currentUser: getSavedState('remote.currentUser'),
+  currentUser: getSavedState(LOCAL_STORAGE_KEY),
 }
 
 export const mutations = {
   SET_CURRENT_USER(state, newValue) {
     state.currentUser = newValue
-    saveState('remote.currentUser', newValue)
+    saveState(LOCAL_STORAGE_KEY, newValue)
     if (newValue === null) {
-      clearState('remote.currentUser')
+      clearState(LOCAL_STORAGE_KEY)
     }
   },
 }
@@ -20,10 +22,13 @@ export const getters = {
   existingCredentials(state) {
     return !!state.currentUser
   },
+  getCurrentUser(state) {
+    return state.currentUser
+  },
 }
 
 export const actions = {
-  // Uses the username/password to request the file from the serves
+  // Uses the storeId/username/password to request the file from the serves
   getFile({ commit, dispatch, getters }, { storeId, username, password } = {}) {
     return axios
       .post(
@@ -32,12 +37,10 @@ export const actions = {
         { responseType: 'blob' }
       )
       .then((response) => {
-        // mocking the user - might change this later
         const user = {
-          id: -1,
+          storeId: storeId,
           username: username,
           password: password,
-          name: username,
         }
         commit('SET_CURRENT_USER', user)
         return new Response(response.data).arrayBuffer()

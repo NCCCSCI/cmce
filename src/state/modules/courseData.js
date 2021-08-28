@@ -247,5 +247,6 @@ export const actions = {
         })
       }
     }
+    await this.dispatch('courseData/db/cleanUpDB')
   },
 }

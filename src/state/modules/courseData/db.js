@@ -2,6 +2,7 @@
 
 export const state = {
   db: null,
+  updated: [],
 }
 
 var gen
@@ -9,6 +10,9 @@ var gen
 export const mutations = {
   SET_DB(state, payload) {
     state.db = payload.db
+  },
+  ADD_TO_UPDATED(state, payload) {
+    state.updated.push(payload.crn)
   },
 }
 
@@ -55,7 +59,7 @@ export const actions = {
       objectStore.createIndex('sections', 'crn', { unique: true })
     }
   },
-  updateDB({ state }, payload) {
+  updateDB({ state, commit }, payload) {
     return new Promise((resolve) => {
       // thanks to: https://stackoverflow.com/a/11045107/2182349
       function* generator(state, payload) {
@@ -101,9 +105,26 @@ export const actions = {
       function grabEventAndContinueHandler(event) {
         const result = gen.next(event)
         if (result.done) {
+          // keep track of all the crns (keys) which were updated
+          commit('ADD_TO_UPDATED', { crn: payload.crn })
           resolve(result.value)
         }
       }
     })
+  },
+  cleanUpDB({ state }) {
+    const objectStore = state.db
+      .transaction(['sections'], 'readwrite')
+      .objectStore('sections')
+    const request = objectStore.getAllKeys()
+    request.onsuccess = function(event) {
+      const keys = event.target.result
+      for (const key of keys) {
+        if (state.updated.indexOf(key) === -1) {
+          // delete any crns which weren't updated
+          objectStore.delete(key)
+        }
+      }
+    }
   },
 }
