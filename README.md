@@ -29,9 +29,11 @@ _This tool is focused on identifying classes with no or low cost materials, use 
 
 ## Deltas
 
-The estimator includes a local delta check. The expectation is that most people will run this tool from the same machine and that it will be used for a single school/bookstore.
+The estimator includes a local store delta check.
 
-Each time the cost of materials is estimated, the costs are stored locally. The next time the tool runs, it will add the text _changed_ to any class that has a different cost of materials.
+Each time the cost of materials is estimated, the costs are stored locally. The next time the tool runs, it will add the text _changed_ to any class that has been added or has a different cost of materials.
+
+If a class has been removed from the HEOA file, it's absence will not be noted.
 
 ## Instructions For Use
 

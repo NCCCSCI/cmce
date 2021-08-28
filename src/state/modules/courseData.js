@@ -55,7 +55,6 @@ class Section {
     this.instructorLastName = instructorLastName
     this.instructorFirstName = instructorFirstName
     this.materials = {}
-    this.changedSinceLastRun = false
   }
 
   addMaterial(material) {
@@ -140,33 +139,13 @@ class Course {
 
 export const state = {
   courses: {},
-}
-
-export const getters = {
-  getAllMaterialCostData(state) {
-    const rows = []
-    for (const c in state.courses) {
-      const course = state.courses[c]
-      for (const s in course.sections) {
-        const section = course.sections[s]
-        rows.push([
-          section.crn,
-          course.subjectCode,
-          course.courseNumber,
-          section.id,
-          section.totalCostOfMaterials,
-          section.notes,
-          section.instructorLastName,
-          section.instructorFirstName,
-          section.changedSinceLastRun ? 'changed' : '',
-        ])
-      }
-    }
-    return rows
-  },
+  storeId: '',
 }
 
 export const mutations = {
+  SET_STORE_ID(state, storeId) {
+    state.storeId = storeId
+  },
   CLEAR_COURSES(state) {
     state.courses = {}
   },
@@ -182,12 +161,6 @@ export const mutations = {
     state.courses[payload.course.signature].addSection(payload.section)
   },
 
-  SET_SECTION_CHANGED(state, payload) {
-    state.courses[payload.course.signature].sections[
-      payload.section.crn
-    ].changedSinceLastRun = true
-  },
-
   ADD_MATERIAL(state, payload) {
     state.courses[payload.course.signature].sections[
       payload.section.crn
@@ -196,7 +169,7 @@ export const mutations = {
 }
 
 export const actions = {
-  clear({ commit }) {
+  clearMaterialData({ commit }) {
     commit('CLEAR_COURSES')
   },
 
@@ -205,6 +178,7 @@ export const actions = {
       if (rowObj.adoptionStatus !== C && rowObj.adoptionStatus !== NT) {
         return
       }
+      commit('SET_STORE_ID', rowObj.storeId)
       const course = new Course(rowObj.subjectCode, rowObj.courseNumber)
       commit('ADD_COURSE', { course: course })
       const section = new Section(
@@ -230,23 +204,37 @@ export const actions = {
       // TODO
     }
   },
-  async deltaCheck({ commit, state }) {
-    // update the database - persistent storage
-    // this also sets up the delta data
+  async getAllMaterialCostData({ commit, state }) {
+    // set up the database for the current store
+    await this.dispatch('courseData/db/setup', state.storeId)
+    const rows = []
     for (const c in state.courses) {
       const course = state.courses[c]
       for (const s in course.sections) {
         const section = course.sections[s]
+        // update the cost estimate in the database
         await this.dispatch('courseData/db/updateDB', {
+          storeId: state.storeId,
           crn: section.crn,
           totalCostOfMaterials: section.totalCostOfMaterials,
         }).then((changed) => {
-          if (changed) {
-            commit('SET_SECTION_CHANGED', { course: course, section: section })
-          }
+          // add this class to the reported data (note the changed flag)
+          rows.push([
+            section.crn,
+            course.subjectCode,
+            course.courseNumber,
+            section.id,
+            section.totalCostOfMaterials,
+            section.notes,
+            section.instructorLastName,
+            section.instructorFirstName,
+            changed ? 'changed' : '',
+          ])
         })
       }
     }
-    await this.dispatch('courseData/db/cleanUpDB')
+    // remove any classes that were not updated
+    await this.dispatch('courseData/db/cleanUpDB', state.storeId)
+    return rows
   },
 }

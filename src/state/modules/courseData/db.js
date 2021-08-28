@@ -2,12 +2,15 @@
 
 export const state = {
   db: null,
+  // updated is the list of crns that were passed to the updateDB action
   updated: [],
 }
-
 var gen
 
 export const mutations = {
+  CLEAR_UPDATED(state) {
+    state.updated = []
+  },
   SET_DB(state, payload) {
     state.db = payload.db
   },
@@ -23,41 +26,45 @@ export const getters = {
 }
 
 export const actions = {
-  init({ commit }) {
-    if (typeof window.indexedDB === 'undefined') {
-      window.indexedDB =
-        window.indexedDB ||
-        window.mozIndexedDB ||
-        window.webkitIndexedDB ||
-        window.msIndexedDB
-    }
+  setup({ commit }, storeId) {
+    return new Promise((resolve) => {
+      commit('CLEAR_UPDATED')
+      if (typeof window.indexedDB === 'undefined') {
+        window.indexedDB =
+          window.indexedDB ||
+          window.mozIndexedDB ||
+          window.webkitIndexedDB ||
+          window.msIndexedDB
+      }
 
-    window.IDBTransaction = window.IDBTransaction ||
-      window.webkitIDBTransaction ||
-      window.msIDBTransaction || { READ_WRITE: 'readwrite' } // This line should only be needed if it is needed to support the object's constants for older browsers
-    window.IDBKeyRange =
-      window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+      window.IDBTransaction = window.IDBTransaction ||
+        window.webkitIDBTransaction ||
+        window.msIDBTransaction || { READ_WRITE: 'readwrite' } // This line should only be needed if it is needed to support the object's constants for older browsers
+      window.IDBKeyRange =
+        window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
 
-    if (!window.indexedDB) {
-      alert(
-        'Unsupported browser, difference feature will not be supported. Use Firefox.'
-      )
-    }
+      if (!window.indexedDB) {
+        alert(
+          'Unsupported browser, difference feature will not be supported. Use Firefox.'
+        )
+      }
 
-    let db = {}
+      let db = {}
 
-    db = window.indexedDB.open('nolo', 3)
+      db = window.indexedDB.open('cmce', 3)
 
-    db.onsuccess = function(event) {
-      const ldb = event.target.result
-      commit('SET_DB', { db: ldb })
-    }
+      db.onsuccess = function(event) {
+        const ldb = event.target.result
+        commit('SET_DB', { db: ldb })
+        resolve()
+      }
 
-    db.onupgradeneeded = function(event) {
-      const ldb = event.target.result
-      const objectStore = ldb.createObjectStore('sections', { keyPath: 'crn' })
-      objectStore.createIndex('sections', 'crn', { unique: true })
-    }
+      db.onupgradeneeded = function(event) {
+        const ldb = event.target.result
+        const objectStore = ldb.createObjectStore(storeId, { keyPath: 'crn' })
+        objectStore.createIndex(storeId, 'crn', { unique: true })
+      }
+    })
   },
   updateDB({ state, commit }, payload) {
     return new Promise((resolve) => {
@@ -95,9 +102,11 @@ export const actions = {
       }
 
       const objectStore = state.db
-        .transaction(['sections'], 'readwrite')
-        .objectStore('sections')
-      objectStore.index('sections')
+        .transaction([payload.storeId], 'readwrite')
+        .objectStore(payload.storeId)
+      objectStore.index(payload.storeId)
+      // keep track of all the crns (keys) which were updated
+      commit('ADD_TO_UPDATED', { crn: payload.crn })
 
       const gen = generator(state, payload)
       gen.next()
@@ -105,17 +114,15 @@ export const actions = {
       function grabEventAndContinueHandler(event) {
         const result = gen.next(event)
         if (result.done) {
-          // keep track of all the crns (keys) which were updated
-          commit('ADD_TO_UPDATED', { crn: payload.crn })
           resolve(result.value)
         }
       }
     })
   },
-  cleanUpDB({ state }) {
+  cleanUpDB({ state }, storeId) {
     const objectStore = state.db
-      .transaction(['sections'], 'readwrite')
-      .objectStore('sections')
+      .transaction([storeId], 'readwrite')
+      .objectStore(storeId)
     const request = objectStore.getAllKeys()
     request.onsuccess = function(event) {
       const keys = event.target.result

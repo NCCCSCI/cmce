@@ -4,15 +4,12 @@ export const courseComputed = {
   ...mapState('courseData', {
     courses: (state) => state.courses,
   }),
-  ...mapGetters('courseData', [
-    'getAllMaterialCostData',
-    'getOnlyMaterialCostData',
-  ]),
 }
 
 export const courseMethods = mapActions('courseData', [
+  'clearMaterialData',
   'processRow',
-  'deltaCheck',
+  'getAllMaterialCostData',
 ])
 
 export const workbookComputed = {

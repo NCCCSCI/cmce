@@ -29,6 +29,7 @@ export default {
       sheets: [{ name: 'NoLo', data: [[]] }],
       downloadReady: false,
       previewHTML: '',
+      previewReady: false,
       pricesFormatted: false,
     }
   },
@@ -62,13 +63,15 @@ export default {
     ...courseMethods,
     ...workbookComputed,
     ...workbookMethods,
-    processSheet() {
+    async processSheet() {
+      this.clearMaterialData()
       this.downloadReady = false
       if (this.hasWorkbook) {
         const sheets = this.workbook().Sheets
         const firstSheet = sheets[Object.keys(sheets)[0]]
 
         const COLUMNS = {
+          storeId: 'A',
           subjectCode: 'E',
           courseNumber: 'F',
           sectionId: 'G',
@@ -103,8 +106,7 @@ export default {
           this.processRow(rowObj)
           row++
         }
-        this.deltaCheck()
-        this.sheets[0].data = this.getAllMaterialCostData()
+        this.sheets[0].data = await this.getAllMaterialCostData()
         this.sheets[0].data.unshift([
           'CRN',
           'Subject Code',
@@ -118,6 +120,7 @@ export default {
       }
     },
     renderPreview() {
+      this.previewReady = false
       this.previewHTML = ''
       if (this.hasWorkbook) {
         const sheetNames = this.workbook().SheetNames
@@ -125,6 +128,7 @@ export default {
         this.previewHTML = XLSX.utils.sheet_to_html(
           this.workbook().Sheets[sheet1]
         )
+        this.previewReady = true
       }
     },
     highlightPreview() {
@@ -180,7 +184,7 @@ export default {
       </span>
     </div>
 
-    <div :class="$style.xlsxpreview">
+    <div v-if="previewReady" :class="$style.xlsxpreview">
       <p
         >The preview shows <em @click="toggleConcise">all</em> the materials and
         highlights those less than the threshold. It is intended for a quick
@@ -190,6 +194,9 @@ export default {
         ></p
       >
       <table id="previewTable" concise v-html="previewHTML"></table>
+    </div>
+    <div v-else>
+      <p>Please wait ...</p>
     </div>
   </Layout>
 </template>
