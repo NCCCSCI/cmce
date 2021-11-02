@@ -33,7 +33,7 @@ The estimator includes a local store delta check.
 
 Each time the cost of materials is estimated, the costs are stored locally. The next time the tool runs, it will add the text _changed_ to any class that has been added or has a different cost of materials.
 
-If a class has been removed from the HEOA file, it's absence will not be noted.
+If a class has been removed from the HEOA file, its absence will not be noted.
 
 ## Instructions For Use
 
@@ -53,20 +53,31 @@ The **Download** button will deliver a spreadsheet with the estimated cost of ma
 
 The cost estimation spreadsheet includes all the classes in the HEOA spreadsheet. Use the CRN number for class identification.
 
-### Highlighting
-
 There is no evaluation mechanism in the spreadsheet. The data may be analyzed any way.
+
+### Filtering
+
+The spreadsheet can be filtered to make it easier to see which sections have changed since the last time the spreadsheet was created.
+
+1. Click on the Data tab and select column I  
+   ![Click on the Data tab and select column I](public/assets/doc-images/excel-filter-hints-1.png)
+1. Click on Filter  
+   ![Click on Filter](public/assets/doc-images/excel-filter-hints-2.png)
+1. Set the filter to only display rows with the value _changed_ in column I  
+   ![Click on Filter](public/assets/doc-images/excel-filter-hints-3.png)
+
+### Highlighting
 
 You may use Conditional Formatting to highlight rows in the spreadsheet. These instructions describe how to emphasize the courses with an estimated material cost of less than \$40.
 
 1. Select column D  
-   ![Select column D](public/assets/doc-images/excel-hints-1.png)
+   ![Select column D](public/assets/doc-images/excel-highlight-hints-1.png)
 1. Click on _Conditional Formatting_  
-   ![Click Conditional Formatting](public/assets/doc-images/excel-hints-2.png)
+   ![Click Conditional Formatting](public/assets/doc-images/excel-highlight-hints-2.png)
 1. Choose how you would like to highlight the estimated cost of materials  
-   ![Choose Conditional Formatting](public/assets/doc-images/excel-hints-3.png)
+   ![Choose Conditional Formatting](public/assets/doc-images/excel-highlight-hints-3.png)
 1. Example display  
-   ![Example display](public/assets/doc-images/excel-hints-4.png)
+   ![Example display](public/assets/doc-images/excel-highlight-hints-4.png)
 
 The spreadsheet can not be styled or customized further without a paid license. Ref: <https://gist.github.com/SheetJSDev/24b8acd317d01999d721b38de7c53021>
 
@@ -86,3 +97,14 @@ Notes in the HEOA file are included in the output, they may be preceded by addit
 ### Source
 
 - <https://github.com/bgamrat/nolo>
+
+#### Development Workflow
+
+clone/download
+
+```sh
+yarn install
+yarn dev --open
+```
+
+**_Update_** `deploy.sh` before use

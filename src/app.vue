@@ -92,6 +92,15 @@ h6 {
   @extend %typography-small;
 }
 
+pre {
+  display: inline-block;
+  width: auto;
+  padding: 3px;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 3px;
+}
+
 // ===
 // Vendor
 // ===
